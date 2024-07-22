@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwgvjblwclp2j"]
+[gd_scene load_steps=5 format=3 uid="uid://cwgvjblwclp2j"]
 
 [ext_resource type="Script" path="res://scripts/Battle.cs" id="1_c0btg"]
 [ext_resource type="PackedScene" uid="uid://d3y7e8bw1yhj3" path="res://scenes/ground_1.tscn" id="2_i524t"]
 [ext_resource type="PackedScene" uid="uid://d332aoydva53n" path="res://scenes/ground_2.tscn" id="3_f1c8y"]
+[ext_resource type="Texture2D" uid="uid://m8lspemvf77l" path="res://textures/anitagreen1.png" id="4_40r5k"]
 
 [node name="Battle" type="Node3D"]
 script = ExtResource("1_c0btg")
@@ -63,26 +64,67 @@ transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 15, 0, 5)
 [node name="Team2Creature8" parent="Slots" instance=ExtResource("3_f1c8y")]
 transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 17, 0, 5)
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Canvas" type="CanvasLayer" parent="."]
 
-[node name="Canvas" type="CanvasLayer" parent="Control"]
-
-[node name="VBoxTeam1" type="VBoxContainer" parent="Control/Canvas"]
+[node name="GridTeam1" type="GridContainer" parent="Canvas"]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -66.0
-offset_right = 75.0
+offset_top = -64.0
+offset_right = 640.0
 grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+columns = 2
 
-[node name="LblTeam1HP" type="Label" parent="Control/Canvas/VBoxTeam1"]
+[node name="VBox1" type="VBoxContainer" parent="Canvas/GridTeam1"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="LblHP" type="Label" parent="Canvas/GridTeam1/VBox1"]
 layout_mode = 2
 text = "1234"
 
-[node name="BtnTeam1RPA1" type="Button" parent="Control/Canvas/VBoxTeam1"]
+[node name="HBoxRP" type="HBoxContainer" parent="Canvas/GridTeam1/VBox1"]
 layout_mode = 2
+
+[node name="BtnRPA1" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
 text = "10"
+
+[node name="BtnRPA2" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="BtnRPA3" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="HBoxCards" type="HBoxContainer" parent="Canvas/GridTeam1"]
+layout_mode = 2
+
+[node name="Card1" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("4_40r5k")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Card2" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("4_40r5k")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Card3" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("4_40r5k")
+expand_mode = 1
+stretch_mode = 4
