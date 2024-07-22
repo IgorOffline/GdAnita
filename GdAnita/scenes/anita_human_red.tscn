@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dv5sdwg1w0cao"]
+
+[node name="anitahumanred" type="Node3D"]
+
+[node name="Empty" type="Node3D" parent="."]
+transform = Transform3D(0, 1, 5.96046e-08, -5.96046e-08, 0, -1, -1, 5.96046e-08, 0, 0, 0, 1.48)
+
+[node name="Empty_001" type="Node3D" parent="."]
+transform = Transform3D(-1, -4.37114e-08, -4.37114e-08, 4.37114e-08, 0, -1, 4.37114e-08, -1, 0, 2.12385, 0, 0)
