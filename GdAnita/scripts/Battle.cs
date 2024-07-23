@@ -12,6 +12,8 @@ public partial class Battle : Node3D
     private Label? _lblTeam2Hp;
     private Button? _btnTeam1ManaA;
     private TextureButton? _btnCard1;
+    private CompressedTexture2D? _btnCardTextureNormalEmpty;
+    private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
 
@@ -23,6 +25,8 @@ public partial class Battle : Node3D
     private bool _doRaycast;
     private double _manaTimer;
     private double _manaTimerMax = 0.25;
+    private double _handTimer;
+    private double _handTimerMax = 0.25;
 
     public override void _Ready()
     {
@@ -67,6 +71,9 @@ public partial class Battle : Node3D
             }
         };
 
+        _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
+        _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
+        
         _audioStreamPlayerCasting = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerCasting");
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
     }
@@ -95,6 +102,22 @@ public partial class Battle : Node3D
         _lblTeam2Hp!.Text = GameMaster.Team2.Hp.ToString();
         _btnTeam1ManaA!.Text = GameMaster.Team1.ManaA.ToString();
 
+        _handTimer += delta;
+
+        if (_handTimer > _handTimerMax)
+        {
+            if (GameMaster.Team1.Hand.Count > 0)
+            {
+                _btnCard1!.TextureNormal = _btnCardTextureNormalHeld;
+            }
+            else
+            {
+                _btnCard1!.TextureNormal = _btnCardTextureNormalEmpty;
+            }
+            
+            _handTimer = 0;
+        }
+        
         ImGui.Begin("Battle");
         if (ImGui.Button("Draw card"))
         {
