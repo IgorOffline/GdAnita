@@ -5,10 +5,10 @@ using ImGuiNET;
 public partial class Battle : Node3D
 {
     private Global? _global;
-    private GameMaster GameMaster => _global!.GameMaster;
+    private GameMaster GameMaster => _global!.GameMaster!;
 
     private Camera3D? _cam;
-    private Button? _btnTeam1RPA1;
+    private Button? _btnTeam1ManaA;
     private TextureButton? _btnCard1;
     
     private Node? _lastCollider;
@@ -23,8 +23,18 @@ public partial class Battle : Node3D
         _global = GetNode<Global>("/root/Global");
         _cam = GetNode<Camera3D>("Camera");
         _groundMask = GetNode("Slots/Team1Creature1").GetNode<StaticBody3D>("StaticBody3D").CollisionLayer;
-        _btnTeam1RPA1 = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxRP/BtnRPA1");
-        _btnTeam1RPA1.Pressed += () => { GD.Print("_btnTeam1RPA1"); };
+
+        var hpLabel = GetNode<Label>("Canvas/GridTeam1/VBox1/LblHP");
+        hpLabel.Text = GameMaster.Team1.Hp.ToString();
+        
+        _btnTeam1ManaA = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaA");
+        _btnTeam1ManaA.Text = GameMaster.Team1.ManaA.ToString();
+        var btnTeam1ManaB = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaB");
+        btnTeam1ManaB.Text = GameMaster.Team1.ManaB.ToString();
+        var btnTeam1ManaC = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaC");
+        btnTeam1ManaC.Text = GameMaster.Team1.ManaB.ToString();
+        _btnTeam1ManaA.Pressed += () => { GD.Print("_btnTeam1ManaA"); };
+        
         _btnCard1 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard1");
         _btnCard1.Pressed += () => { GD.Print("_btnCard1"); };
     }

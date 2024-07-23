@@ -87,20 +87,20 @@ size_flags_vertical = 4
 layout_mode = 2
 text = "1234"
 
-[node name="HBoxRP" type="HBoxContainer" parent="Canvas/GridTeam1/VBox1"]
+[node name="HBoxMana" type="HBoxContainer" parent="Canvas/GridTeam1/VBox1"]
 layout_mode = 2
 
-[node name="BtnRPA1" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "10"
-
-[node name="BtnRPA2" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+[node name="BtnManaA" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxMana"]
 layout_mode = 2
 size_flags_vertical = 4
 text = "10"
 
-[node name="BtnRPA3" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+[node name="BtnManaB" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxMana"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="BtnManaC" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxMana"]
 layout_mode = 2
 size_flags_vertical = 4
 text = "10"
