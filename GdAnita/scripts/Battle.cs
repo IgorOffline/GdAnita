@@ -1,11 +1,12 @@
+using AnitaBusiness.BusinessMain;
 using Godot;
-using System;
 using ImGuiNET;
 
 public partial class Battle : Node3D
 {
     private Global? _global;
-    
+    private GameMaster GameMaster => _global!.GameMaster;
+
     private Camera3D? _cam;
     private Button? _btnTeam1RPA1;
     private TextureButton? _btnCard1;
@@ -40,7 +41,7 @@ public partial class Battle : Node3D
         }
 
         ImGui.Begin("Battle");
-        ImGui.Text("Counter: " + _global!.Counter);
+        ImGui.Text("Counter: " + GameMaster.Counter);
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         ImGui.End();
     }
@@ -67,7 +68,7 @@ public partial class Battle : Node3D
             var sb = intersection["collider"].As<StaticBody3D>();
             _lastCollider = sb.GetParent();
 
-            ++_global!.Counter;
+            ++GameMaster.Counter;
         }
         else
         {
