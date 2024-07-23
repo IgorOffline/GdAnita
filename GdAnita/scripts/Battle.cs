@@ -13,6 +13,7 @@ public partial class Battle : Node3D
     private Button? _btnTeam1ManaA;
     private TextureButton? _btnCard1;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
+    private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
 
     private Node? _lastCollider;
     private uint _groundMask;
@@ -29,25 +30,45 @@ public partial class Battle : Node3D
         _cam = GetNode<Camera3D>("Camera");
         _groundMask = GetNode("Slots/Team1Creature1").GetNode<StaticBody3D>("StaticBody3D").CollisionLayer;
 
+        GameMaster.Team1.ManaA = 6;
+
         _lblTeam1Hp = GetNode<Label>("Canvas/GridTeam1/VBox1/LblHP");
         _lblTeam2Hp = GetNode<Label>("Canvas/GridTeam2/VBox1/LblHP");
         _btnTeam1ManaA = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaA");
+        var btnTeam2ManaA = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaA");
+        btnTeam2ManaA.Text = GameMaster.Team2.ManaA.ToString();
 
         var btnTeam1ManaB = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaB");
         btnTeam1ManaB.Text = GameMaster.Team1.ManaB.ToString();
         var btnTeam1ManaC = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaC");
         btnTeam1ManaC.Text = GameMaster.Team1.ManaC.ToString();
 
-        _btnTeam1ManaA.Pressed += () => { GameMaster.Team1.PayManaA(); };
+        var btnTeam2ManaB = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaB");
+        btnTeam2ManaB.Text = GameMaster.Team1.ManaB.ToString();
+        var btnTeam2ManaC = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaC");
+        btnTeam2ManaC.Text = GameMaster.Team1.ManaC.ToString();
+
+        _btnTeam1ManaA.Pressed += () =>
+        {
+            var costSuccessfullyPayed = GameMaster.Team1.PayManaA();
+            if (costSuccessfullyPayed)
+            {
+                _audioStreamPlayerPayCost!.Play();
+            }
+        };
 
         _btnCard1 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard1");
         _btnCard1.Pressed += () =>
         {
-            GameMaster.Team1.CastSpell();
-            _audioStreamPlayerCasting!.Play();
+            var successfulTransition = GameMaster.Team1.CastSpell();
+            if (successfulTransition)
+            {
+                _audioStreamPlayerCasting!.Play();
+            }
         };
 
         _audioStreamPlayerCasting = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerCasting");
+        _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
     }
 
     public override void _Process(double delta)
@@ -65,13 +86,7 @@ public partial class Battle : Node3D
 
         if (_manaTimer > _manaTimerMax)
         {
-            if (GameMaster.Team1.TeamState == TeamState.CastingCostsPayed)
-            {
-                GameMaster.Team2.Hp -= 2;
-                GameMaster.Team1.ManaA = 2;
-
-                GameMaster.Team1.TeamState = TeamState.None;
-            }
+            GameMaster.Team1.CastingCostsPayed();
 
             _manaTimer = 0;
         }
@@ -81,6 +96,11 @@ public partial class Battle : Node3D
         _btnTeam1ManaA!.Text = GameMaster.Team1.ManaA.ToString();
 
         ImGui.Begin("Battle");
+        if (ImGui.Button("Draw card"))
+        {
+            GameMaster.Team1.DrawCard();
+        }
+
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         ImGui.Text("Team1 State: " + Util.TeamStateToString(GameMaster.Team1.TeamState));
         ImGui.End();
