@@ -5,7 +5,8 @@ public static class Util
     public static string TeamStateToString(TeamState teamState) => teamState switch
     {
         TeamState.None => "None",
-        TeamState.Casting => "Casting",
+        TeamState.CastingPayCosts => "CastingPayCosts",
+        TeamState.CastingCostsPayed => "CastingCostsPayed",
         _ => "?"
     };
 }

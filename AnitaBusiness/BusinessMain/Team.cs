@@ -13,7 +13,23 @@ public class Team
     {
         if (TeamState == TeamState.None)
         {
-            TeamState = TeamState.Casting;
+            TeamState = TeamState.CastingPayCosts;
+        }
+    }
+    
+    public void PayManaA()
+    {
+        if (TeamState == TeamState.CastingPayCosts)
+        {
+            if (ManaA > 0)
+            {
+                ManaA -= 1;
+            }
+
+            if (ManaA == 0)
+            {
+                TeamState = TeamState.CastingCostsPayed;
+            }
         }
     }
 }

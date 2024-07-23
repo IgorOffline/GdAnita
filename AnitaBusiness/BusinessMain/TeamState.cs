@@ -3,5 +3,6 @@
 public enum TeamState : ushort
 {
     None = 0,
-    Casting = 1,
+    CastingPayCosts = 1,
+    CastingCostsPayed = 2,
 }
