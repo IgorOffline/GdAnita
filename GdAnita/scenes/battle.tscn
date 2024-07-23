@@ -108,23 +108,23 @@ text = "10"
 [node name="HBoxCards" type="HBoxContainer" parent="Canvas/GridTeam1"]
 layout_mode = 2
 
-[node name="Card1" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
-custom_minimum_size = Vector2(64, 64)
+[node name="BtnCard1" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-texture = ExtResource("4_40r5k")
-expand_mode = 1
-stretch_mode = 4
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="Card2" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
-custom_minimum_size = Vector2(64, 64)
+[node name="BtnCard2" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-texture = ExtResource("4_40r5k")
-expand_mode = 1
-stretch_mode = 4
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="Card3" type="TextureRect" parent="Canvas/GridTeam1/HBoxCards"]
-custom_minimum_size = Vector2(64, 64)
+[node name="BtnCard3" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-texture = ExtResource("4_40r5k")
-expand_mode = 1
-stretch_mode = 4
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5
