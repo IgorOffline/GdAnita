@@ -1,0 +1,130 @@
+[gd_scene load_steps=5 format=3 uid="uid://cwgvjblwclp2j"]
+
+[ext_resource type="Script" path="res://scripts/Battle.cs" id="1_c0btg"]
+[ext_resource type="PackedScene" uid="uid://d3y7e8bw1yhj3" path="res://scenes/ground_1.tscn" id="2_i524t"]
+[ext_resource type="PackedScene" uid="uid://d332aoydva53n" path="res://scenes/ground_2.tscn" id="3_f1c8y"]
+[ext_resource type="Texture2D" uid="uid://m8lspemvf77l" path="res://textures/anitagreen1.png" id="4_40r5k"]
+
+[node name="Battle" type="Node3D"]
+script = ExtResource("1_c0btg")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 3.12208, 10, 13.4)
+projection = 1
+fov = 90.0
+size = 14.0
+
+[node name="Slots" type="Node3D" parent="."]
+
+[node name="Team1Creature1" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 3, 0, 7)
+
+[node name="Team1Creature2" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 5, 0, 7)
+
+[node name="Team1Creature3" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 7, 0, 7)
+
+[node name="Team1Creature4" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 9, 0, 7)
+
+[node name="Team1Creature5" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 11, 0, 7)
+
+[node name="Team1Creature6" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 13, 0, 7)
+
+[node name="Team1Creature7" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 15, 0, 7)
+
+[node name="Team1Creature8" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 17, 0, 7)
+
+[node name="Team2Creature1" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 3, 0, 5)
+
+[node name="Team2Creature2" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 5, 0, 5)
+
+[node name="Team2Creature3" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 7, 0, 5)
+
+[node name="Team2Creature4" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 9, 0, 5)
+
+[node name="Team2Creature5" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 11, 0, 5)
+
+[node name="Team2Creature6" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 13, 0, 5)
+
+[node name="Team2Creature7" parent="Slots" instance=ExtResource("2_i524t")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 15, 0, 5)
+
+[node name="Team2Creature8" parent="Slots" instance=ExtResource("3_f1c8y")]
+transform = Transform3D(1, 0, 0, 0, 0.25, 0, 0, 0, 1, 17, 0, 5)
+
+[node name="Canvas" type="CanvasLayer" parent="."]
+
+[node name="GridTeam1" type="GridContainer" parent="Canvas"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+offset_right = 640.0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+columns = 2
+
+[node name="VBox1" type="VBoxContainer" parent="Canvas/GridTeam1"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="LblHP" type="Label" parent="Canvas/GridTeam1/VBox1"]
+layout_mode = 2
+text = "1234"
+
+[node name="HBoxRP" type="HBoxContainer" parent="Canvas/GridTeam1/VBox1"]
+layout_mode = 2
+
+[node name="BtnRPA1" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="BtnRPA2" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="BtnRPA3" type="Button" parent="Canvas/GridTeam1/VBox1/HBoxRP"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "10"
+
+[node name="HBoxCards" type="HBoxContainer" parent="Canvas/GridTeam1"]
+layout_mode = 2
+
+[node name="BtnCard1" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="BtnCard2" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="BtnCard3" type="TextureButton" parent="Canvas/GridTeam1/HBoxCards"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+texture_normal = ExtResource("4_40r5k")
+ignore_texture_size = true
+stretch_mode = 5

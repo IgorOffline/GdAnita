@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GdAnita", "GdAnita.csproj", "{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnitaBusiness", "..\AnitaBusiness\AnitaBusiness.csproj", "{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{BAFAA312-0C74-4B1D-8869-AAB90F597A1B}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{597F57CF-AB93-4A0C-9134-88C0BF8EEE37}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal
