@@ -6,6 +6,9 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     public TeamId TeamId { get; } = teamId;
 
     public Team EnemyTeam => TeamId == TeamId.Team1 ? GameMaster.Team2 : GameMaster.Team1;
+    public List<Entity> Deck { get; set; } = [];
+    public List<Entity> Hand { get; set; } = [];
+    public Entity? Action { get; set; }
     public int Hp { get; set; } = 20;
     public int ManaA { get; set; } = 0;
     public int ManaB { get; set; } = 0;
@@ -14,11 +17,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
     public TeamState TeamState { get; set; }
 
-    public bool CastSpell()
+    public bool CastSpell(CardIndex cardIndex)
     {
         var successfulTransition = false;
         
-        if (TeamState == TeamState.None)
+        if (Hand.Count > cardIndex.Val && TeamState == TeamState.None)
         {
             TeamState = TeamState.CastingPayCosts;
 
@@ -55,16 +58,24 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
     public void CastingCostsPayed()
     {
-        if (TeamState == TeamState.CastingCostsPayed)
+        if (Hand.Count > 0 && TeamState == TeamState.CastingCostsPayed)
         {
             GameMaster.DamageTeam(EnemyTeam);
-                
+
+            var entity = Hand.First();
+            Hand.RemoveAt(0);
+            
             TeamState = TeamState.None;
         }
     }
 
     public void DrawCard()
     {
-        //
+        if (Deck.Count > 0 && Hand.Count < 5)
+        {
+            var entity = Deck.First();
+            Deck.RemoveAt(0);
+            Hand.Add(entity);
+        }
     }
 }

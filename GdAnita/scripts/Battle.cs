@@ -60,7 +60,7 @@ public partial class Battle : Node3D
         _btnCard1 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard1");
         _btnCard1.Pressed += () =>
         {
-            var successfulTransition = GameMaster.Team1.CastSpell();
+            var successfulTransition = GameMaster.Team1.CastSpell(new CardIndex(0));
             if (successfulTransition)
             {
                 _audioStreamPlayerCasting!.Play();
@@ -103,6 +103,7 @@ public partial class Battle : Node3D
 
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         ImGui.Text("Team1 State: " + Util.TeamStateToString(GameMaster.Team1.TeamState));
+        ImGui.Text("Team1 Hand count: " + GameMaster.Team1.Hand.Count);
         ImGui.End();
     }
 
