@@ -6,4 +6,14 @@ public class Team
     public int ManaA { get; set; } = 2;
     public int ManaB { get; set; } = 0;
     public int ManaC { get; set; } = 0;
+
+    public TeamState TeamState { get; set; }
+
+    public void CastSpell()
+    {
+        if (TeamState == TeamState.None)
+        {
+            TeamState = TeamState.Casting;
+        }
+    }
 }
