@@ -14,6 +14,7 @@ public partial class Battle : Node3D
     private TextureButton? _btnCard1;
     private TextureButton? _btnCard2;
     private TextureButton? _btnCard3;
+    private TextureButton[] _buttons = new TextureButton[3];
     private CompressedTexture2D? _btnCardTextureNormalEmpty;
     private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
@@ -54,20 +55,30 @@ public partial class Battle : Node3D
 
         GameMaster.Team1.ManaA = 6;
 
+        _buttons[0] = _btnCard1;
+        _buttons[1] = _btnCard2;
+        _buttons[2] = _btnCard3;
+
         btnTeam2ManaA.Text = GameMaster.Team2.ManaA.ToString();
         btnTeam1ManaB.Text = GameMaster.Team1.ManaB.ToString();
         btnTeam1ManaC.Text = GameMaster.Team1.ManaC.ToString();
         btnTeam2ManaB.Text = GameMaster.Team1.ManaB.ToString();
         btnTeam2ManaC.Text = GameMaster.Team1.ManaC.ToString();
 
-        _btnCard1.Pressed += () =>
+        for (var i = 0; i < _buttons.Length; i++)
         {
-            var successfulTransition = GameMaster.Team1.CastSpell(new CardIndex(0));
-            if (successfulTransition)
+            var val = i;
+            var button = _buttons[val];
+            
+            button.Pressed += () =>
             {
-                _audioStreamPlayerCasting!.Play();
-            }
-        };
+                var successfulTransition = GameMaster.Team1.CastSpell(new CardIndex(val));
+                if (successfulTransition)
+                {
+                    _audioStreamPlayerCasting!.Play();
+                }
+            };
+        }
 
         _btnTeam1ManaA.Pressed += () =>
         {
@@ -107,14 +118,9 @@ public partial class Battle : Node3D
 
         if (_handTimer > _handTimerMax)
         {
-            var buttons = new[]
+            for (var i = 0; i < _buttons.Length; i++)
             {
-                _btnCard1!, _btnCard2!, _btnCard3!
-            };
-            
-            for (var i = 0; i < buttons.Length; i++)
-            {
-                var button = buttons[i];
+                var button = _buttons[i];
 
                 if (GameMaster.Team1.Hand.Count > i)
                 {
