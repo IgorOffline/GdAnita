@@ -1,4 +1,5 @@
 using AnitaBusiness.BusinessMain;
+using AnitaBusiness.BusinessMain.BusinessMana;
 using Godot;
 using ImGuiNET;
 
@@ -19,10 +20,11 @@ public partial class Battle : Node3D
     private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
-
+    
     private Node? _lastCollider;
     private uint _groundMask;
 
+    private Entity? _hovered;
     private double _raycastTimer;
     private double _raycastTimerMax = 0.11;
     private bool _doRaycast;
@@ -53,17 +55,17 @@ public partial class Battle : Node3D
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
         _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
 
-        GameMaster.Team1.ManaA = 6;
+        GameMaster.Team1.ManaReserveA = new ManaReserve(ManaType.A, new ManaVal(15));
 
         _buttons[0] = _btnCard1;
         _buttons[1] = _btnCard2;
         _buttons[2] = _btnCard3;
 
-        btnTeam2ManaA.Text = GameMaster.Team2.ManaA.ToString();
-        btnTeam1ManaB.Text = GameMaster.Team1.ManaB.ToString();
-        btnTeam1ManaC.Text = GameMaster.Team1.ManaC.ToString();
-        btnTeam2ManaB.Text = GameMaster.Team1.ManaB.ToString();
-        btnTeam2ManaC.Text = GameMaster.Team1.ManaC.ToString();
+        btnTeam2ManaA.Text = GameMaster.Team2.ManaReserveA.Reserve.Val.ToString();
+        btnTeam1ManaB.Text = GameMaster.Team1.ManaReserveB.Reserve.Val.ToString();
+        btnTeam1ManaC.Text = GameMaster.Team1.ManaReserveC.Reserve.Val.ToString();
+        btnTeam2ManaB.Text = GameMaster.Team1.ManaReserveB.Reserve.Val.ToString();
+        btnTeam2ManaC.Text = GameMaster.Team1.ManaReserveC.Reserve.Val.ToString();
 
         for (var i = 0; i < _buttons.Length; i++)
         {
@@ -77,6 +79,16 @@ public partial class Battle : Node3D
                 {
                     _audioStreamPlayerCasting!.Play();
                 }
+            };
+            button.MouseEntered += () =>
+            {
+                _hovered = GameMaster.Team1.Hover(new CardIndex(val));
+                //GD.Print("Mouse entered: " + val);
+            };
+            button.MouseExited += () =>
+            {
+                _hovered = null;
+                //GD.Print("Mouse exited: " + val);
             };
         }
 
@@ -110,9 +122,9 @@ public partial class Battle : Node3D
             _manaTimer = 0;
         }
 
-        _lblTeam1Hp!.Text = GameMaster.Team1.Hp.ToString();
-        _lblTeam2Hp!.Text = GameMaster.Team2.Hp.ToString();
-        _btnTeam1ManaA!.Text = GameMaster.Team1.ManaA.ToString();
+        _lblTeam1Hp!.Text = GameMaster.Team1.Hp.Val.ToString();
+        _lblTeam2Hp!.Text = GameMaster.Team2.Hp.Val.ToString();
+        _btnTeam1ManaA!.Text = GameMaster.Team1.ManaReserveA.Reserve.Val.ToString();
 
         _handTimer += delta;
 
@@ -136,14 +148,31 @@ public partial class Battle : Node3D
         }
 
         ImGui.Begin("Battle");
+        ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         if (ImGui.Button("Draw card"))
         {
             GameMaster.Team1.DrawCard();
         }
+        ImGui.Text("--- Team1 ---");
+        ImGui.Text("Deck Count: " + GameMaster.Team1.Deck.Count);
+        ImGui.Text("State: " + Util.TeamStateToString(GameMaster.Team1.TeamState));
+        ImGui.Text("Hand count: " + GameMaster.Team1.Hand.Count);
+        ImGui.Text("ManaToPayA: " + GameMaster.Team1.ManaToPayA.Cost.Val);
+        ImGui.End();
 
-        ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
-        ImGui.Text("Team1 State: " + Util.TeamStateToString(GameMaster.Team1.TeamState));
-        ImGui.Text("Team1 Hand count: " + GameMaster.Team1.Hand.Count);
+        ImGui.Begin("Card");
+        if (_hovered == null)
+        {
+            ImGui.Text("?");
+        }
+        else
+        {
+            ImGui.Text("Id: " + _hovered.Id);
+            ImGui.Text("Name: " + _hovered.Name);
+            ImGui.Text("Zone: " + Util.ZoneToString(_hovered.Zone));
+            ImGui.Text("ManaCostA: " + _hovered.ManaCostA.Cost.Val);
+            ImGui.Text("Damage: " + _hovered.Damage.Val);
+        }
         ImGui.End();
     }
 

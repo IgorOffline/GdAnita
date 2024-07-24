@@ -1,4 +1,7 @@
-﻿namespace AnitaBusiness.BusinessMain;
+﻿using AnitaBusiness.BusinessMain.BusinessMana;
+using AnitaBusiness.BusinessMain.BusinessTeam;
+
+namespace AnitaBusiness.BusinessMain;
 
 public static class Util
 {
@@ -7,6 +10,24 @@ public static class Util
         TeamState.None => "None",
         TeamState.CastingPayCosts => "CastingPayCosts",
         TeamState.CastingCostsPayed => "CastingCostsPayed",
+        _ => "?"
+    };
+
+    public static string ZoneToString(Zone zone) => zone switch
+    {
+        Zone.None => "None",
+        Zone.Deck => "Deck",
+        Zone.Hand => "Hand",
+        Zone.Graveyard => "Graveyard",
+        _ => "?"
+    };
+
+    public static string ManaTypeToString(ManaType manaType) => manaType switch
+    {
+        ManaType.None => "None",
+        ManaType.A => "A",
+        ManaType.B => "B",
+        ManaType.C => "C",
         _ => "?"
     };
 }

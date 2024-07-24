@@ -1,4 +1,7 @@
-﻿namespace AnitaBusiness.BusinessMain;
+﻿using AnitaBusiness.BusinessMain.BusinessMana;
+using AnitaBusiness.BusinessMain.BusinessTeam;
+
+namespace AnitaBusiness.BusinessMain;
 
 public class GameMaster
 {
@@ -20,13 +23,15 @@ public class GameMaster
             var burn = new Entity(this);
             burn.Name = "Burn";
             burn.Zone = Zone.Deck;
+            burn.Damage = new Damage(i + 2);
+            burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
             Team1.Deck.Add(burn);
         }
         Team2 = new Team(this, TeamId.Team2);
     }
     
-    public void DamageTeam(Team teamToDamage)
+    public void DamageTeam(Team teamToDamage, Entity source)
     {
-        teamToDamage.Hp -= 2;
+        teamToDamage.Hp = new Hp(teamToDamage.Hp.Val - source.Damage.Val);
     }
 }
