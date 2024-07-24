@@ -1,8 +1,7 @@
 ﻿namespace AnitaBusiness.BusinessMain;
 
-public enum TeamId
+public enum EntityType : ushort
 {
     None = 0,
-    Team1 = 1,
-    Team2 = 2,
+    Card = 1,
 }

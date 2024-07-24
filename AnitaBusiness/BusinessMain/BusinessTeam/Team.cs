@@ -1,4 +1,6 @@
-﻿namespace AnitaBusiness.BusinessMain;
+﻿using AnitaBusiness.BusinessMain.BusinessMana;
+
+namespace AnitaBusiness.BusinessMain.BusinessTeam;
 
 public class Team(GameMaster gameMaster, TeamId teamId)
 {
@@ -8,11 +10,12 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     public Team EnemyTeam => TeamId == TeamId.Team1 ? GameMaster.Team2 : GameMaster.Team1;
     public List<Entity> Deck { get; set; } = [];
     public List<Entity> Hand { get; set; } = [];
-    public int Hp { get; set; } = 20;
-    public int ManaA { get; set; } = 0;
-    public int ManaB { get; set; } = 0;
-    public int ManaC { get; set; } = 0;
-    public int ManaToPay { get; set; }
+    public Entity? Action { get; set; }
+    public Hp Hp { get; set; } = new Hp(20);
+    public ManaReserve ManaReserveA { get; set; } = new ManaReserve(ManaType.A, new ManaVal(0));
+    public ManaReserve ManaReserveB { get; set; } = new ManaReserve(ManaType.B, new ManaVal(0));
+    public ManaReserve ManaReserveC { get; set; } = new ManaReserve(ManaType.C, new ManaVal(0));
+    public ManaCost ManaToPayA { get; set; } = new ManaCost(ManaType.A, new ManaVal(0));
 
     public TeamState TeamState { get; set; }
 
@@ -22,9 +25,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         
         if (Hand.Count > cardIndex.Val && TeamState == TeamState.None)
         {
+            Action = Hand[cardIndex.Val];
+            
             TeamState = TeamState.CastingPayCosts;
 
-            ManaToPay = 2;
+            ManaToPayA = new ManaCost(Action.ManaCostA.ManaType, Action.ManaCostA.Cost);
 
             successfulTransition = true;
         }
@@ -43,15 +48,16 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         
         if (TeamState == TeamState.CastingPayCosts)
         {
-            if (ManaA > 0)
+            if (ManaReserveA.Reserve.Val > 0)
             {
-                ManaToPay -= 1;
-                ManaA -= 1;
+                ManaToPayA = new ManaCost(ManaType.A, new ManaVal(ManaToPayA.Cost.Val - 1));
+                
+                ManaReserveA.Reserve = new ManaVal(ManaReserveA.Reserve.Val - 1);
 
                 costSuccessfullyPayed = true;
             }
 
-            if (ManaToPay == 0)
+            if (ManaToPayA.Cost.Val == 0)
             {
                 TeamState = TeamState.CastingCostsPayed;
             }
@@ -62,12 +68,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
     public void CastingCostsPayed()
     {
-        if (Hand.Count > 0 && TeamState == TeamState.CastingCostsPayed)
+        if (Action != null && TeamState == TeamState.CastingCostsPayed)
         {
-            GameMaster.DamageTeam(EnemyTeam);
+            GameMaster.DamageTeam(EnemyTeam, Action);
 
-            var entity = Hand.First();
-            Hand.RemoveAt(0);
+            Action = null;
             
             TeamState = TeamState.None;
         }

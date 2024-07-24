@@ -1,4 +1,4 @@
-﻿namespace AnitaBusiness.BusinessMain;
+﻿namespace AnitaBusiness.BusinessMain.BusinessTeam;
 
 public enum TeamState : ushort
 {
