@@ -3,7 +3,7 @@ using AnitaBusiness.BusinessMain;
 
 public partial class Global : Node
 {
-	public GameMaster GameMaster { get; private set; }
+	public GameMaster? GameMaster { get; private set; }
 	
 	public override void _Ready()
 	{
