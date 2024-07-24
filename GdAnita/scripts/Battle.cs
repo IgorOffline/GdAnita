@@ -19,10 +19,11 @@ public partial class Battle : Node3D
     private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
-
+    
     private Node? _lastCollider;
     private uint _groundMask;
 
+    private Entity? _hovered;
     private double _raycastTimer;
     private double _raycastTimerMax = 0.11;
     private bool _doRaycast;
@@ -77,6 +78,16 @@ public partial class Battle : Node3D
                 {
                     _audioStreamPlayerCasting!.Play();
                 }
+            };
+            button.MouseEntered += () =>
+            {
+                _hovered = GameMaster.Team1.Hover(new CardIndex(val));
+                //GD.Print("Mouse entered: " + val);
+            };
+            button.MouseExited += () =>
+            {
+                _hovered = null;
+                //GD.Print("Mouse exited: " + val);
             };
         }
 
@@ -144,6 +155,19 @@ public partial class Battle : Node3D
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         ImGui.Text("Team1 State: " + Util.TeamStateToString(GameMaster.Team1.TeamState));
         ImGui.Text("Team1 Hand count: " + GameMaster.Team1.Hand.Count);
+        ImGui.End();
+
+        ImGui.Begin("Card");
+        if (_hovered == null)
+        {
+            ImGui.Text("?");
+        }
+        else
+        {
+            ImGui.Text(_hovered.Id.ToString());
+            ImGui.Text(_hovered.Name);
+            ImGui.Text(Util.ZoneToString(_hovered.Zone));
+        }
         ImGui.End();
     }
 

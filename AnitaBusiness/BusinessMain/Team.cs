@@ -8,7 +8,6 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     public Team EnemyTeam => TeamId == TeamId.Team1 ? GameMaster.Team2 : GameMaster.Team1;
     public List<Entity> Deck { get; set; } = [];
     public List<Entity> Hand { get; set; } = [];
-    public Entity? Action { get; set; }
     public int Hp { get; set; } = 20;
     public int ManaA { get; set; } = 0;
     public int ManaB { get; set; } = 0;
@@ -31,6 +30,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         }
 
         return successfulTransition;
+    }
+    
+    public Entity? Hover(CardIndex cardIndex)
+    {
+        return Hand.Count > cardIndex.Val ? Hand[cardIndex.Val] : null;
     }
     
     public bool PayManaA()
@@ -75,6 +79,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         {
             var entity = Deck.First();
             Deck.RemoveAt(0);
+            entity.Zone = Zone.Hand;
             Hand.Add(entity);
         }
     }

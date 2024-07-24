@@ -9,4 +9,13 @@ public static class Util
         TeamState.CastingCostsPayed => "CastingCostsPayed",
         _ => "?"
     };
+
+    public static string ZoneToString(Zone zone) => zone switch
+    {
+        Zone.None => "None",
+        Zone.Deck => "Deck",
+        Zone.Hand => "Hand",
+        Zone.Graveyard => "Graveyard",
+        _ => "?"
+    };
 }
