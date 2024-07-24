@@ -9,7 +9,7 @@ public static class Util
     {
         TeamState.None => "None",
         TeamState.CastingPayCosts => "CastingPayCosts",
-        TeamState.CastingCostsPayed => "CastingCostsPayed",
+        TeamState.CastingCostsPaid => "CastingCostsPaid",
         _ => "?"
     };
 

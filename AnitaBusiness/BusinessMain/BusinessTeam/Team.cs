@@ -59,19 +59,22 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
             if (ManaToPayA.Cost.Val == 0)
             {
-                TeamState = TeamState.CastingCostsPayed;
+                TeamState = TeamState.CastingCostsPaid;
             }
         }
 
         return costSuccessfullyPayed;
     }
 
-    public void CastingCostsPayed()
+    public void CastingCostsPaid()
     {
-        if (Action != null && TeamState == TeamState.CastingCostsPayed)
+        if (Action != null && TeamState == TeamState.CastingCostsPaid)
         {
             GameMaster.DamageTeam(EnemyTeam, Action);
 
+            var card = Hand.First(card => card.Id == Action.Id);
+            card.Zone = Zone.Graveyard;
+            Hand.Remove(card);
             Action = null;
             
             TeamState = TeamState.None;

@@ -117,7 +117,7 @@ public partial class Battle : Node3D
 
         if (_manaTimer > _manaTimerMax)
         {
-            GameMaster.Team1.CastingCostsPayed();
+            GameMaster.Team1.CastingCostsPaid();
 
             _manaTimer = 0;
         }
