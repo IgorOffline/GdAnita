@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cwgvjblwclp2j"]
+[gd_scene load_steps=9 format=3 uid="uid://cwgvjblwclp2j"]
 
 [ext_resource type="Script" path="res://scripts/Battle.cs" id="1_c0btg"]
 [ext_resource type="PackedScene" uid="uid://d3y7e8bw1yhj3" path="res://scenes/ground_1.tscn" id="2_i524t"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://cbdnpsle14c6h" path="res://scenes/grid_team.tscn" id="4_g3l60"]
 [ext_resource type="AudioStream" uid="uid://c8k0r61lduob8" path="res://sfx/anitacast.ogg" id="5_4265o"]
 [ext_resource type="AudioStream" uid="uid://21g6otmjxrm8" path="res://sfx/anitapaycost.ogg" id="6_suluf"]
+[ext_resource type="AudioStream" uid="uid://xkuuoalr3r8j" path="res://sfx/anitatargetface.ogg" id="7_4l2kr"]
+[ext_resource type="AudioStream" uid="uid://cwanfhhbnbk3w" path="res://sfx/anitadrawcard.ogg" id="8_xapte"]
 
 [node name="Battle" type="Node3D"]
 script = ExtResource("1_c0btg")
@@ -83,3 +85,9 @@ stream = ExtResource("5_4265o")
 
 [node name="AudioStreamPlayerPayCost" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("6_suluf")
+
+[node name="AudioStreamPlayerTargetFace" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("7_4l2kr")
+
+[node name="AudioStreamPlayerDrawCard" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("8_xapte")

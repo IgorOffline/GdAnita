@@ -21,6 +21,8 @@ public partial class Battle : Node3D
     private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
+    private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
+    private AudioStreamPlayer3D? _audioStreamPlayerDrawCard;
 
     private PackedScene? _creature1A;
     
@@ -55,6 +57,8 @@ public partial class Battle : Node3D
         _btnCard3 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard3");
         _audioStreamPlayerCasting = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerCasting");
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
+        _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
+        _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
         _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
@@ -93,8 +97,7 @@ public partial class Battle : Node3D
             
             button.Pressed += () =>
             {
-                var successfulTransition = GameMaster.Team1.CastSpell(new CardIndex(val));
-                if (successfulTransition)
+                if (GameMaster.Team1.CastSpell(new CardIndex(val)))
                 {
                     _audioStreamPlayerCasting!.Play();
                 }
@@ -112,14 +115,16 @@ public partial class Battle : Node3D
         }
 
         _btnTeam2Avatar.Pressed += () =>
-        { 
-            GameMaster.Team1.TargetEnemyAvatar();
+        {
+            if (GameMaster.Team1.TargetEnemyAvatar())
+            {
+                _audioStreamPlayerTargetFace!.Play();
+            }
         };
         
         _btnTeam1ManaA.Pressed += () =>
         {
-            var costSuccessfullyPayed = GameMaster.Team1.PayManaA();
-            if (costSuccessfullyPayed)
+            if (GameMaster.Team1.PayManaA())
             {
                 _audioStreamPlayerPayCost!.Play();
             }
@@ -175,7 +180,10 @@ public partial class Battle : Node3D
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         if (ImGui.Button("Draw card"))
         {
-            GameMaster.Team1.DrawCard();
+            if (GameMaster.Team1.DrawCard())
+            {
+                _audioStreamPlayerDrawCard!.Play();
+            }
         }
         ImGui.Text("--- Team1 ---");
         ImGui.Text("Deck Count: " + GameMaster.Team1.Deck.Count);

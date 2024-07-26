@@ -75,19 +75,27 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         }
     }
 
-    public void DrawCard()
+    public bool DrawCard()
     {
+        var successfulDraw = false;
+        
         if (Deck.Count > 0 && Hand.Count < 5)
         {
             var entity = Deck.First();
             Deck.RemoveAt(0);
             entity.Zone = Zone.Hand;
             Hand.Add(entity);
+
+            successfulDraw = true;
         }
+
+        return successfulDraw;
     }
 
-    public void TargetEnemyAvatar()
+    public bool TargetEnemyAvatar()
     {
+        var successfulTransition = false;
+        
         if (Action != null && TeamState == TeamState.Targeting)
         {
             GameMaster.DamageTeam(EnemyTeam, Action);
@@ -98,6 +106,10 @@ public class Team(GameMaster gameMaster, TeamId teamId)
             Action = null;
             
             TeamState = TeamState.None;
+
+            successfulTransition = true;
         }
+        
+        return successfulTransition;
     }
 }
