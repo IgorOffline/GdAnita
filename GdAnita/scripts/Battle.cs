@@ -12,6 +12,7 @@ public partial class Battle : Node3D
     private Label? _lblTeam1Hp;
     private Label? _lblTeam2Hp;
     private Button? _btnTeam1ManaA;
+    private TextureButton? _btnTeam2Avatar;
     private TextureButton? _btnCard1;
     private TextureButton? _btnCard2;
     private TextureButton? _btnCard3;
@@ -48,6 +49,7 @@ public partial class Battle : Node3D
         var btnTeam1ManaC = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaC");
         var btnTeam2ManaB = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaB");
         var btnTeam2ManaC = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaC");
+        _btnTeam2Avatar = GetNode<TextureButton>("Canvas/GridTeam2/BtnAvatar"); 
         _btnCard1 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard1");
         _btnCard2 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard2");
         _btnCard3 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard3");
@@ -109,6 +111,11 @@ public partial class Battle : Node3D
             };
         }
 
+        _btnTeam2Avatar.Pressed += () =>
+        { 
+            GameMaster.Team1.TargetEnemyAvatar();
+        };
+        
         _btnTeam1ManaA.Pressed += () =>
         {
             var costSuccessfullyPayed = GameMaster.Team1.PayManaA();

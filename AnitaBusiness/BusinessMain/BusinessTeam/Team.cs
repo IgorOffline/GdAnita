@@ -71,14 +71,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         if (Action != null && TeamState == TeamState.CastingCostsPaid)
         {
-            GameMaster.DamageTeam(EnemyTeam, Action);
-
-            var card = Hand.First(card => card.Id == Action.Id);
-            card.Zone = Zone.Graveyard;
-            Hand.Remove(card);
-            Action = null;
-            
-            TeamState = TeamState.None;
+            TeamState = TeamState.Targeting;
         }
     }
 
@@ -90,6 +83,21 @@ public class Team(GameMaster gameMaster, TeamId teamId)
             Deck.RemoveAt(0);
             entity.Zone = Zone.Hand;
             Hand.Add(entity);
+        }
+    }
+
+    public void TargetEnemyAvatar()
+    {
+        if (Action != null && TeamState == TeamState.Targeting)
+        {
+            GameMaster.DamageTeam(EnemyTeam, Action);
+
+            var card = Hand.First(card => card.Id == Action.Id);
+            card.Zone = Zone.Graveyard;
+            Hand.Remove(card);
+            Action = null;
+            
+            TeamState = TeamState.None;
         }
     }
 }

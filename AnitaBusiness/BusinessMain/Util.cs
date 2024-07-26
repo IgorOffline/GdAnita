@@ -20,6 +20,7 @@ public static class Util
         TeamState.None => "None",
         TeamState.CastingPayCosts => "CastingPayCosts",
         TeamState.CastingCostsPaid => "CastingCostsPaid",
+        TeamState.Targeting => "Targeting",
         _ => "?"
     };
 

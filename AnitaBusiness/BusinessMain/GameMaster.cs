@@ -42,6 +42,7 @@ public class GameMaster
             bee.Name = "Bee";
             bee.CardType = CardType.Creature;
             bee.Zone = Zone.Creature;
+            bee.Hp = new Hp(1);
             bee.Damage = new Damage(0);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
             Team2.CreatureZone[i] = bee;
