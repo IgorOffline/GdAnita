@@ -26,10 +26,13 @@ public partial class Battle : Node3D
 
     private PackedScene? _creature1A;
     
-    private Node? _lastCollider;
+    private Node? _lastGroundCollider;
+    private Node? _lastCreatureCollider;
     private uint _groundMask;
+    private uint _creatureMask;
 
-    private Entity? _hovered;
+    private Entity? _hoveredHand;
+    private Entity? _hoveredCreature;
     private double _raycastTimer;
     private double _raycastTimerMax = 0.11;
     private bool _doRaycast;
@@ -64,6 +67,9 @@ public partial class Battle : Node3D
         _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
 
         _creature1A = ResourceLoader.Load<PackedScene>("scenes/alice_1a.tscn");
+        var instanceForCreatureMask = _creature1A.Instantiate<Node3D>();
+        _creatureMask = instanceForCreatureMask.GetNode<StaticBody3D>("StaticBody3D").CollisionLayer;
+        instanceForCreatureMask.QueueFree();
         
         GameMaster.Team1.ManaReserveA = new ManaReserve(ManaType.A, new ManaVal(15));
 
@@ -104,12 +110,12 @@ public partial class Battle : Node3D
             };
             button.MouseEntered += () =>
             {
-                _hovered = GameMaster.Team1.Hover(new CardIndex(val));
+                _hoveredHand = GameMaster.Team1.HoverHand(new CardIndex(val));
                 //GD.Print("Mouse entered: " + val);
             };
             button.MouseExited += () =>
             {
-                _hovered = null;
+                _hoveredHand = null;
                 //GD.Print("Mouse exited: " + val);
             };
         }
@@ -137,8 +143,25 @@ public partial class Battle : Node3D
 
         if (_raycastTimer > _raycastTimerMax)
         {
-            _doRaycast = true;
+            // START: ADDITIONAL TIMER LOGIC
+            _hoveredCreature = null;
+            
+            if (_lastCreatureCollider != null)
+            {
+                var lastCreatureColliderPlacedName = _lastCreatureCollider.Name;
 
+                foreach (var team2Creature in GameMaster.Team2.CreatureZone)
+                {
+                    if (lastCreatureColliderPlacedName.ToString().Equals(team2Creature.PlacedName.Val))
+                    {
+                        _hoveredCreature = team2Creature;
+                    }
+                }
+            }
+            // END: ADDITIONAL TIMER LOGIC
+            
+            _doRaycast = true;
+            
             _raycastTimer = 0;
         }
 
@@ -177,7 +200,7 @@ public partial class Battle : Node3D
         }
 
         ImGui.Begin("Battle");
-        ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
+        ImGui.Text(_lastGroundCollider == null ? "lastCollider null" : _lastGroundCollider.Name.ToString());
         if (ImGui.Button("Draw card"))
         {
             if (GameMaster.Team1.DrawCard())
@@ -193,18 +216,21 @@ public partial class Battle : Node3D
         ImGui.End();
 
         ImGui.Begin("Card");
-        if (_hovered == null)
+        if (_hoveredHand == null && _hoveredCreature == null)
         {
             ImGui.Text("?");
         }
         else
         {
-            ImGui.Text("Id: " + _hovered.Id);
-            ImGui.Text("Name: " + _hovered.Name);
-            ImGui.Text("Zone: " + Util.ZoneToString(_hovered.Zone));
-            ImGui.Text("CardType: " + Util.CardTypeToString(_hovered.CardType));
-            ImGui.Text("ManaCostA: " + _hovered.ManaCostA.Cost.Val);
-            ImGui.Text("Damage: " + _hovered.Damage.Val);
+            var hoveredEntity = _hoveredHand ?? _hoveredCreature;
+            
+            ImGui.Text("Id: " + hoveredEntity!.Id);
+            ImGui.Text("Name: " + hoveredEntity.Name.Val);
+            ImGui.Text("Zone: " + Util.ZoneToString(hoveredEntity.Zone));
+            ImGui.Text("CardType: " + Util.CardTypeToString(hoveredEntity.CardType));
+            ImGui.Text("ManaCostA: " + hoveredEntity.ManaCostA.Cost.Val);
+            ImGui.Text("Damage: " + hoveredEntity.Damage.Val);
+            ImGui.Text("Hp: " + hoveredEntity.Hp.Val);
         }
         ImGui.End();
     }
@@ -215,6 +241,9 @@ public partial class Battle : Node3D
         {
             return;
         }
+        
+        _lastGroundCollider = null;
+        _lastCreatureCollider = null;
 
         var mousePosition = GetViewport().GetMousePosition();
         var from = _cam!.ProjectRayOrigin(mousePosition);
@@ -229,11 +258,15 @@ public partial class Battle : Node3D
         if (intersection.Count > 0 && intersection["collider"].AsGodotObject() is StaticBody3D)
         {
             var sb = intersection["collider"].As<StaticBody3D>();
-            _lastCollider = sb.GetParent();
+            _lastGroundCollider = sb.GetParent();
         }
-        else
+
+        rayParams.CollisionMask = _creatureMask;
+        intersection = GetWorld3D().DirectSpaceState.IntersectRay(rayParams);
+        if (intersection.Count > 0 && intersection["collider"].AsGodotObject() is StaticBody3D)
         {
-            _lastCollider = null;
+            var sb = intersection["collider"].As<StaticBody3D>();
+            _lastCreatureCollider = sb.GetParent();
         }
 
         _doRaycast = false;

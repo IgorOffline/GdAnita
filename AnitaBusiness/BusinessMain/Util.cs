@@ -8,7 +8,7 @@ public static class Util
     public static Entity CreateEmptyCreatureSlot(GameMaster gameMaster)
     {
         var emptyCreature = new Entity(gameMaster);
-        emptyCreature.Name = "Empty";
+        emptyCreature.Name = new EntityName("Empty");
         emptyCreature.Zone = Zone.Creature;
         emptyCreature.BusinessType = BusinessType.None;
         
