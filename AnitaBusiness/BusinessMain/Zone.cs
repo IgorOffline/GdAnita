@@ -6,4 +6,5 @@ public enum Zone : ushort
     Deck = 1,
     Hand = 2,
     Graveyard = 3,
+    Creature = 4,
 }
