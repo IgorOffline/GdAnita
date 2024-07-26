@@ -100,16 +100,37 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         {
             GameMaster.DamageTeam(EnemyTeam, Action);
 
-            var card = Hand.First(card => card.Id == Action.Id);
-            card.Zone = Zone.Graveyard;
-            Hand.Remove(card);
-            Action = null;
-            
-            TeamState = TeamState.None;
+            TargetingTransitionCommon();
 
             successfulTransition = true;
         }
         
         return successfulTransition;
+    }
+    
+    public bool TargetEnemyCreature(Entity enemyCreature)
+    {
+        var successfulTransition = false;
+        
+        if (Action != null && TeamState == TeamState.Targeting)
+        {
+            enemyCreature.Hp = new Hp(enemyCreature.Hp.Val - Action.Damage.Val);
+
+            TargetingTransitionCommon();
+            
+            successfulTransition = true;
+        }
+        
+        return successfulTransition;
+    }
+
+    public void TargetingTransitionCommon()
+    {
+        var card = Hand.First(card => card.Id == Action!.Id);
+        card.Zone = Zone.Graveyard;
+        Hand.Remove(card);
+        Action = null;
+            
+        TeamState = TeamState.None;
     }
 }

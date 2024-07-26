@@ -22,6 +22,7 @@ public partial class Battle : Node3D
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
+    private AudioStreamPlayer3D? _audioStreamPlayerTargetCreature;
     private AudioStreamPlayer3D? _audioStreamPlayerDrawCard;
 
     private PackedScene? _creature1A;
@@ -61,6 +62,7 @@ public partial class Battle : Node3D
         _audioStreamPlayerCasting = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerCasting");
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
         _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
+        _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetCreature");
         _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
@@ -165,6 +167,14 @@ public partial class Battle : Node3D
             _raycastTimer = 0;
         }
 
+        if (_hoveredCreature != null && Input.IsActionJustPressed("MousePrimary"))
+        {
+            if (GameMaster.Action(_hoveredCreature))
+            {
+                _audioStreamPlayerTargetCreature!.Play();
+            }
+        }
+        
         _manaTimer += delta;
 
         if (_manaTimer > _manaTimerMax)
