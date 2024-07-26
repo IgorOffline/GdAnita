@@ -38,7 +38,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         return successfulTransition;
     }
     
-    public Entity? Hover(CardIndex cardIndex)
+    public Entity? HoverHand(CardIndex cardIndex)
     {
         return Hand.Count > cardIndex.Val ? Hand[cardIndex.Val] : null;
     }

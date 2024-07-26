@@ -29,7 +29,7 @@ public class GameMaster
         for (var i = 0; i < 3; i++)
         {
             var burn = new Entity(this);
-            burn.Name = "Burn";
+            burn.Name = new EntityName("Burn");
             burn.CardType = CardType.Sorcery;
             burn.Zone = Zone.Deck;
             burn.Damage = new Damage(i + 2);
@@ -39,12 +39,14 @@ public class GameMaster
         for (var i = 0; i < 3; i++)
         {
             var bee = new Entity(this);
-            bee.Name = "Bee";
+            bee.Name = new EntityName("Bee");
             bee.CardType = CardType.Creature;
             bee.Zone = Zone.Creature;
             bee.Hp = new Hp(1);
             bee.Damage = new Damage(0);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
+
+            bee.PlacedName = new EntityName("Team2Creature" + i);
             Team2.CreatureZone[i] = bee;
         }
     }
