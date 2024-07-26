@@ -55,4 +55,9 @@ public class GameMaster
     {
         teamToDamage.Hp = new Hp(teamToDamage.Hp.Val - source.Damage.Val);
     }
+
+    public bool Action(Entity entity)
+    {
+        return Team1.TargetEnemyCreature(entity);
+    }
 }
