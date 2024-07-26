@@ -12,6 +12,7 @@ public partial class Battle : Node3D
     private Label? _lblTeam1Hp;
     private Label? _lblTeam2Hp;
     private Button? _btnTeam1ManaA;
+    private TextureButton? _btnTeam2Avatar;
     private TextureButton? _btnCard1;
     private TextureButton? _btnCard2;
     private TextureButton? _btnCard3;
@@ -20,6 +21,10 @@ public partial class Battle : Node3D
     private CompressedTexture2D? _btnCardTextureNormalHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
+    private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
+    private AudioStreamPlayer3D? _audioStreamPlayerDrawCard;
+
+    private PackedScene? _creature1A;
     
     private Node? _lastCollider;
     private uint _groundMask;
@@ -46,17 +51,35 @@ public partial class Battle : Node3D
         var btnTeam1ManaC = GetNode<Button>("Canvas/GridTeam1/VBox1/HBoxMana/BtnManaC");
         var btnTeam2ManaB = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaB");
         var btnTeam2ManaC = GetNode<Button>("Canvas/GridTeam2/VBox1/HBoxMana/BtnManaC");
+        _btnTeam2Avatar = GetNode<TextureButton>("Canvas/GridTeam2/BtnAvatar"); 
         _btnCard1 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard1");
         _btnCard2 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard2");
         _btnCard3 = GetNode<TextureButton>("Canvas/GridTeam1/HBoxCards/BtnCard3");
         _audioStreamPlayerCasting = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerCasting");
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
+        _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
+        _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
         _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
 
+        _creature1A = ResourceLoader.Load<PackedScene>("scenes/alice_1a.tscn");
+        
         GameMaster.Team1.ManaReserveA = new ManaReserve(ManaType.A, new ManaVal(15));
 
+        for (var i = 0; i < GameMaster.Team2.CreatureZone.Length; i++)
+        {
+            var creature = GameMaster.Team2.CreatureZone[i];
+
+            if (creature.BusinessType == BusinessType.Card)
+            {
+                var newCreature = _creature1A.Instantiate<Node3D>();
+                AddChild(newCreature);
+                newCreature.Name = "Team2Creature" + i;
+                newCreature.Position = BattleUtil.CreatureIndexToPosition(i);
+            }
+        }
+        
         _buttons[0] = _btnCard1;
         _buttons[1] = _btnCard2;
         _buttons[2] = _btnCard3;
@@ -74,8 +97,7 @@ public partial class Battle : Node3D
             
             button.Pressed += () =>
             {
-                var successfulTransition = GameMaster.Team1.CastSpell(new CardIndex(val));
-                if (successfulTransition)
+                if (GameMaster.Team1.CastSpell(new CardIndex(val)))
                 {
                     _audioStreamPlayerCasting!.Play();
                 }
@@ -92,10 +114,17 @@ public partial class Battle : Node3D
             };
         }
 
+        _btnTeam2Avatar.Pressed += () =>
+        {
+            if (GameMaster.Team1.TargetEnemyAvatar())
+            {
+                _audioStreamPlayerTargetFace!.Play();
+            }
+        };
+        
         _btnTeam1ManaA.Pressed += () =>
         {
-            var costSuccessfullyPayed = GameMaster.Team1.PayManaA();
-            if (costSuccessfullyPayed)
+            if (GameMaster.Team1.PayManaA())
             {
                 _audioStreamPlayerPayCost!.Play();
             }
@@ -117,7 +146,7 @@ public partial class Battle : Node3D
 
         if (_manaTimer > _manaTimerMax)
         {
-            GameMaster.Team1.CastingCostsPayed();
+            GameMaster.Team1.CastingCostsPaid();
 
             _manaTimer = 0;
         }
@@ -151,7 +180,10 @@ public partial class Battle : Node3D
         ImGui.Text(_lastCollider == null ? "lastCollider null" : _lastCollider.Name.ToString());
         if (ImGui.Button("Draw card"))
         {
-            GameMaster.Team1.DrawCard();
+            if (GameMaster.Team1.DrawCard())
+            {
+                _audioStreamPlayerDrawCard!.Play();
+            }
         }
         ImGui.Text("--- Team1 ---");
         ImGui.Text("Deck Count: " + GameMaster.Team1.Deck.Count);
@@ -170,6 +202,7 @@ public partial class Battle : Node3D
             ImGui.Text("Id: " + _hovered.Id);
             ImGui.Text("Name: " + _hovered.Name);
             ImGui.Text("Zone: " + Util.ZoneToString(_hovered.Zone));
+            ImGui.Text("CardType: " + Util.CardTypeToString(_hovered.CardType));
             ImGui.Text("ManaCostA: " + _hovered.ManaCostA.Cost.Val);
             ImGui.Text("Damage: " + _hovered.Damage.Val);
         }
@@ -204,5 +237,13 @@ public partial class Battle : Node3D
         }
 
         _doRaycast = false;
+    }
+
+    private static class BattleUtil
+    {
+        public static Vector3 CreatureIndexToPosition(int i)
+        {
+            return new Vector3(3 + i * 2, 0, 5);
+        }
     }
 }

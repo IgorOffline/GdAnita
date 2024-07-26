@@ -10,6 +10,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     public Team EnemyTeam => TeamId == TeamId.Team1 ? GameMaster.Team2 : GameMaster.Team1;
     public List<Entity> Deck { get; set; } = [];
     public List<Entity> Hand { get; set; } = [];
+    public Entity[] CreatureZone { get; set; } = new Entity[8];
     public Entity? Action { get; set; }
     public Hp Hp { get; set; } = new Hp(20);
     public ManaReserve ManaReserveA { get; set; } = new ManaReserve(ManaType.A, new ManaVal(0));
@@ -59,33 +60,56 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
             if (ManaToPayA.Cost.Val == 0)
             {
-                TeamState = TeamState.CastingCostsPayed;
+                TeamState = TeamState.CastingCostsPaid;
             }
         }
 
         return costSuccessfullyPayed;
     }
 
-    public void CastingCostsPayed()
+    public void CastingCostsPaid()
     {
-        if (Action != null && TeamState == TeamState.CastingCostsPayed)
+        if (Action != null && TeamState == TeamState.CastingCostsPaid)
         {
-            GameMaster.DamageTeam(EnemyTeam, Action);
-
-            Action = null;
-            
-            TeamState = TeamState.None;
+            TeamState = TeamState.Targeting;
         }
     }
 
-    public void DrawCard()
+    public bool DrawCard()
     {
+        var successfulDraw = false;
+        
         if (Deck.Count > 0 && Hand.Count < 5)
         {
             var entity = Deck.First();
             Deck.RemoveAt(0);
             entity.Zone = Zone.Hand;
             Hand.Add(entity);
+
+            successfulDraw = true;
         }
+
+        return successfulDraw;
+    }
+
+    public bool TargetEnemyAvatar()
+    {
+        var successfulTransition = false;
+        
+        if (Action != null && TeamState == TeamState.Targeting)
+        {
+            GameMaster.DamageTeam(EnemyTeam, Action);
+
+            var card = Hand.First(card => card.Id == Action.Id);
+            card.Zone = Zone.Graveyard;
+            Hand.Remove(card);
+            Action = null;
+            
+            TeamState = TeamState.None;
+
+            successfulTransition = true;
+        }
+        
+        return successfulTransition;
     }
 }
