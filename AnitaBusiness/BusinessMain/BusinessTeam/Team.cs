@@ -10,6 +10,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     public Team EnemyTeam => TeamId == TeamId.Team1 ? GameMaster.Team2 : GameMaster.Team1;
     public List<Entity> Deck { get; set; } = [];
     public List<Entity> Hand { get; set; } = [];
+    public Entity[] CreatureZone { get; set; } = new Entity[8];
     public Entity? Action { get; set; }
     public Hp Hp { get; set; } = new Hp(20);
     public ManaReserve ManaReserveA { get; set; } = new ManaReserve(ManaType.A, new ManaVal(0));

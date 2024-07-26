@@ -5,6 +5,16 @@ namespace AnitaBusiness.BusinessMain;
 
 public static class Util
 {
+    public static Entity CreateEmptyCreatureSlot(GameMaster gameMaster)
+    {
+        var emptyCreature = new Entity(gameMaster);
+        emptyCreature.Name = "Empty";
+        emptyCreature.Zone = Zone.Creature;
+        emptyCreature.BusinessType = BusinessType.None;
+        
+        return emptyCreature;
+    }
+    
     public static string TeamStateToString(TeamState teamState) => teamState switch
     {
         TeamState.None => "None",
@@ -19,6 +29,7 @@ public static class Util
         Zone.Deck => "Deck",
         Zone.Hand => "Hand",
         Zone.Graveyard => "Graveyard",
+        Zone.Creature => "Creature",
         _ => "?"
     };
 
@@ -28,6 +39,14 @@ public static class Util
         ManaType.A => "A",
         ManaType.B => "B",
         ManaType.C => "C",
+        _ => "?"
+    };
+    
+    public static string CardTypeToString(CardType cardType) => cardType switch
+    {
+        CardType.None => "None",
+        CardType.Sorcery => "Sorcery",
+        CardType.Creature => "Creature",
         _ => "?"
     };
 }
