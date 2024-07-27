@@ -117,6 +117,17 @@ public class Team(GameMaster gameMaster, TeamId teamId)
             enemyCreature.Hp = new Hp(enemyCreature.Hp.Val - Action.Damage.Val);
 
             TargetingTransitionCommon();
+
+            if (enemyCreature.Hp.Val < 1)
+            {
+                foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
+                {
+                    if (enemyCreatureInZone.Id.Equals(enemyCreature.Id))
+                    {
+                        Util.RevertCreatureToEmptySlot(enemyCreature);
+                    }
+                }
+            }
             
             successfulTransition = true;
         }
