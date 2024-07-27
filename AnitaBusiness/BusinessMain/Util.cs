@@ -15,6 +15,17 @@ public static class Util
         return emptyCreature;
     }
     
+    public static void RevertCreatureToEmptySlot(Entity creature)
+    {
+        creature.Name = new EntityName("Empty");
+        creature.BusinessType = BusinessType.None;
+    }
+
+    public static Identity Team2CreatureIdentityFormula(int index)
+    {
+        return new Identity(index + 1 + 8);
+    }
+    
     public static string TeamStateToString(TeamState teamState) => teamState switch
     {
         TeamState.None => "None",

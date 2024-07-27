@@ -5,11 +5,13 @@ namespace AnitaBusiness.BusinessMain;
 
 public class GameMaster
 {
-    private static int _id;
+    private static Identity _id = new(0);
 
-    public static int GetNextId()
+    public static Identity GetNextId()
     {
-        return ++_id;
+        _id = new Identity(_id.Val + 1);
+        
+        return _id;
     }
 
     public Team Team1 { get; set; }
@@ -46,7 +48,7 @@ public class GameMaster
             bee.Damage = new Damage(0);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
 
-            bee.PlacedName = new EntityName("Team2Creature" + i);
+            bee.PlacedIndex = Util.Team2CreatureIdentityFormula(i);
             Team2.CreatureZone[i] = bee;
         }
     }
