@@ -147,6 +147,20 @@ public partial class Battle : Node3D
 
     public void SpawnCreatures()
     {
+        for (var i = 0; i < GameMaster.Team1.CreatureZone.Length; i++)
+        {
+            var creature = GameMaster.Team1.CreatureZone[i];
+
+            if (creature.AnitaType == AnitaType.Card)
+            {
+                var newCreature = _creature1A!.Instantiate<Node3D>();
+                newCreature.Name = "Team1Creature" + i;
+                AddChild(newCreature, true);
+                newCreature.Position = BattleUtil.CreatureIndexToPosition(i, true);
+
+                _creatures.Add(newCreature);
+            }
+        }
         for (var i = 0; i < GameMaster.Team2.CreatureZone.Length; i++)
         {
             var creature = GameMaster.Team2.CreatureZone[i];
@@ -156,7 +170,7 @@ public partial class Battle : Node3D
                 var newCreature = _creature1A!.Instantiate<Node3D>();
                 newCreature.Name = "Team2Creature" + i;
                 AddChild(newCreature, true);
-                newCreature.Position = BattleUtil.CreatureIndexToPosition(i);
+                newCreature.Position = BattleUtil.CreatureIndexToPosition(i, false);
 
                 _creatures.Add(newCreature);
             }
@@ -176,9 +190,18 @@ public partial class Battle : Node3D
             {
                 var lastCreatureColliderPlacedPosition = _lastCreatureCollider.Position;
 
+                foreach (var team1Creature in GameMaster.Team1.CreatureZone)
+                {
+                    var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition, true);
+
+                    if (!placedIndex.Equals(new Identity(0)) && placedIndex.Equals(team1Creature.PlacedIndex))
+                    {
+                        _hoveredCreature = team1Creature;
+                    }
+                }
                 foreach (var team2Creature in GameMaster.Team2.CreatureZone)
                 {
-                    var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition);
+                    var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition, false);
 
                     if (!placedIndex.Equals(new Identity(0)) && placedIndex.Equals(team2Creature.PlacedIndex))
                     {
@@ -316,18 +339,22 @@ public partial class Battle : Node3D
 
     private static class BattleUtil
     {
-        public static Vector3 CreatureIndexToPosition(int i)
+        public static Vector3 CreatureIndexToPosition(int i, bool team1)
         {
-            return new Vector3(3 + i * 2, 0, 5);
+            var zOffset = team1 ? 2 : 0;
+            
+            return new Vector3(3 + i * 2, 0, 5 + zOffset);
         }
 
-        public static Identity PositionToIndex(GameMaster gameMaster, Vector3 position)
+        public static Identity PositionToIndex(GameMaster gameMaster, Vector3 position, bool team1)
         {
-            for (var i = 0; i < gameMaster.Team2.CreatureZone.Length; i++)
+            var team = team1 ? gameMaster.Team1 : gameMaster.Team2;
+            
+            for (var i = 0; i < team.CreatureZone.Length; i++)
             {
-                if (position.Equals(CreatureIndexToPosition(i)))
+                if (position.Equals(CreatureIndexToPosition(i, team1)))
                 {
-                    return Util.Team2CreatureIdentityFormula(i);
+                    return Util.TeamCreatureIdentityFormula(i, team1);
                 }
             }
 

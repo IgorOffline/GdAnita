@@ -40,17 +40,29 @@ public class GameMaster
             burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
             Team1.Deck.Add(burn);
         }
+        {
+            var bee = new Entity(this);
+            bee.Name = new EntityName("Strong Bee");
+            bee.CardType = CardType.Creature;
+            bee.Zone = Zone.Creature;
+            bee.Hp = new Hp(9);
+            bee.Damage = new Damage(9);
+            bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
+
+            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(0, true);
+            Team1.CreatureZone[0] = bee;
+        }
         for (var i = 0; i < 3; i++)
         {
             var bee = new Entity(this);
             bee.Name = new EntityName("Bee");
             bee.CardType = CardType.Creature;
             bee.Zone = Zone.Creature;
-            bee.Hp = new Hp(1);
-            bee.Damage = new Damage(0);
+            bee.Hp = new Hp(i + 1);
+            bee.Damage = new Damage(i + 1);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
 
-            bee.PlacedIndex = Util.Team2CreatureIdentityFormula(i);
+            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(i, false);
             Team2.CreatureZone[i] = bee;
         }
     }
