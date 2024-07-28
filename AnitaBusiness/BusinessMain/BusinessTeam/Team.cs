@@ -1,4 +1,6 @@
 ﻿using AnitaBusiness.BusinessMain.BusinessMana;
+using AnitaBusiness.BusinessMain.BusinessType;
+using AnitaBusiness.BusinessMain.BusinessType.Enums;
 
 namespace AnitaBusiness.BusinessMain.BusinessTeam;
 
@@ -53,7 +55,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
             {
                 ManaToPayA = new ManaCost(ManaType.A, new ManaVal(ManaToPayA.Cost.Val - 1));
                 
-                ManaReserveA.Reserve = new ManaVal(ManaReserveA.Reserve.Val - 1);
+                ManaReserveA = new ManaReserve(ManaType.A, new ManaVal(ManaReserveA.Reserve.Val - 1));
 
                 costSuccessfullyPayed = true;
             }
