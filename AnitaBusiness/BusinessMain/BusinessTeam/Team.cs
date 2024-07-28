@@ -101,8 +101,15 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         if (Action != null && TeamState == TeamState.Targeting)
         {
             GameMaster.DamageTeam(EnemyTeam, Action);
-
-            TargetingTransitionCommon();
+            
+            if (Action.CardType == CardType.Sorcery)
+            {
+                TargetingFromHandTransitionCommon();
+            }
+            else if (Action.CardType == CardType.Creature)
+            {
+                ClearActionAndTeamState();
+            }
 
             successfulTransition = true;
         }
@@ -137,7 +144,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
                     }
                 }
             
-                TargetingTransitionCommon();
+                TargetingFromHandTransitionCommon();
                 
                 successfulTransition = true;
             }
@@ -176,7 +183,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         return successfulTransition;
     }
 
-    public void TargetingTransitionCommon()
+    public void TargetingFromHandTransitionCommon()
     {
         var card = Hand.First(card => card.Id == Action!.Id);
         card.Zone = Zone.Graveyard;
