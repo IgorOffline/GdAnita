@@ -1,4 +1,5 @@
-﻿using AnitaBusiness.BusinessMain.BusinessMana;
+﻿using AnitaBusiness.BusinessMain.BusinessLogging;
+using AnitaBusiness.BusinessMain.BusinessMana;
 using AnitaBusiness.BusinessMain.BusinessTeam;
 using AnitaBusiness.BusinessMain.BusinessType;
 using AnitaBusiness.BusinessMain.BusinessType.Enums;
@@ -7,6 +8,8 @@ namespace AnitaBusiness.BusinessMain;
 
 public class GameMaster
 {
+    public ILogger Logger { get; set; }
+    
     private static Identity _id = new(0);
 
     public static Identity GetNextId()
@@ -19,8 +22,10 @@ public class GameMaster
     public Team Team1 { get; set; }
     public Team Team2 { get; set; }
 
-    public GameMaster()
+    public GameMaster(ILogger logger)
     {
+        Logger = logger;
+        
         Team1 = new Team(this, TeamId.Team1);
         Team2 = new Team(this, TeamId.Team2);
         for (var i = 0; i < 8; i++)
@@ -72,8 +77,8 @@ public class GameMaster
         teamToDamage.Hp = new Hp(teamToDamage.Hp.Val - source.Damage.Val);
     }
 
-    public bool Action(Entity entity)
+    public bool CreatureAction(Entity actionableEntity)
     {
-        return Team1.TargetEnemyCreature(entity);
+        return Team1.CreatureAction(actionableEntity);
     }
 }

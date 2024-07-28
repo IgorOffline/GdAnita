@@ -1,5 +1,6 @@
 using Godot;
 using AnitaBusiness.BusinessMain;
+using AnitaBusiness.BusinessMain.BusinessLogging;
 
 public partial class Global : Node
 {
@@ -8,7 +9,9 @@ public partial class Global : Node
 	public override void _Ready()
 	{
 		GD.Print("Global");
-		GameMaster = new GameMaster();
+		var logger = new AnitaLogger();
+		logger.LogLevel = LogLevel.Trace;
+		GameMaster = new GameMaster(logger);
 	}
 	
 	public override void _Process(double delta)

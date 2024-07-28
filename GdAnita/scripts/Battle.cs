@@ -218,7 +218,7 @@ public partial class Battle : Node3D
 
         if (_hoveredCreature != null && Input.IsActionJustPressed("MousePrimary"))
         {
-            if (GameMaster.Action(_hoveredCreature))
+            if (GameMaster.CreatureAction(_hoveredCreature))
             {
                 DestroyCreatures();
 
