@@ -1,4 +1,4 @@
-﻿namespace AnitaBusiness.BusinessMain;
+﻿namespace AnitaBusiness.BusinessMain.BusinessType.Enums;
 
 public enum Zone : ushort
 {

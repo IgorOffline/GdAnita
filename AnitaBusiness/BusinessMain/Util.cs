@@ -1,5 +1,7 @@
 ﻿using AnitaBusiness.BusinessMain.BusinessMana;
 using AnitaBusiness.BusinessMain.BusinessTeam;
+using AnitaBusiness.BusinessMain.BusinessType;
+using AnitaBusiness.BusinessMain.BusinessType.Enums;
 
 namespace AnitaBusiness.BusinessMain;
 
@@ -10,7 +12,7 @@ public static class Util
         var emptyCreature = new Entity(gameMaster);
         emptyCreature.Name = new EntityName("Empty");
         emptyCreature.Zone = Zone.Creature;
-        emptyCreature.BusinessType = BusinessType.None;
+        emptyCreature.AnitaType = AnitaType.None;
         
         return emptyCreature;
     }
@@ -18,7 +20,7 @@ public static class Util
     public static void RevertCreatureToEmptySlot(Entity creature)
     {
         creature.Name = new EntityName("Empty");
-        creature.BusinessType = BusinessType.None;
+        creature.AnitaType = AnitaType.None;
     }
 
     public static Identity Team2CreatureIdentityFormula(int index)

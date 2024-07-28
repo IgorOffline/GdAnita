@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using AnitaBusiness.BusinessMain;
 using AnitaBusiness.BusinessMain.BusinessMana;
+using AnitaBusiness.BusinessMain.BusinessType;
+using AnitaBusiness.BusinessMain.BusinessType.Enums;
 using Godot;
 using ImGuiNET;
 
@@ -149,7 +151,7 @@ public partial class Battle : Node3D
         {
             var creature = GameMaster.Team2.CreatureZone[i];
 
-            if (creature.BusinessType == BusinessType.Card)
+            if (creature.AnitaType == AnitaType.Card)
             {
                 var newCreature = _creature1A!.Instantiate<Node3D>();
                 newCreature.Name = "Team2Creature" + i;

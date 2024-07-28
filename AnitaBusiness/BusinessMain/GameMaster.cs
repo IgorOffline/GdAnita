@@ -1,5 +1,7 @@
 ﻿using AnitaBusiness.BusinessMain.BusinessMana;
 using AnitaBusiness.BusinessMain.BusinessTeam;
+using AnitaBusiness.BusinessMain.BusinessType;
+using AnitaBusiness.BusinessMain.BusinessType.Enums;
 
 namespace AnitaBusiness.BusinessMain;
 
