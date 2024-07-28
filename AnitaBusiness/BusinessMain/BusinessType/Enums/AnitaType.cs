@@ -1,6 +1,6 @@
 ﻿namespace AnitaBusiness.BusinessMain.BusinessType.Enums;
 
-public enum BusinessTypeEnum : ushort
+public enum AnitaType : ushort
 {
     None = 0,
     Card = 1,

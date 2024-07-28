@@ -151,7 +151,7 @@ public partial class Battle : Node3D
         {
             var creature = GameMaster.Team2.CreatureZone[i];
 
-            if (creature.BusinessTypeEnum == BusinessTypeEnum.Card)
+            if (creature.AnitaType == AnitaType.Card)
             {
                 var newCreature = _creature1A!.Instantiate<Node3D>();
                 newCreature.Name = "Team2Creature" + i;

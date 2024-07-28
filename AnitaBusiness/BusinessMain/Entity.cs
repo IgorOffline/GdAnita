@@ -8,7 +8,7 @@ public class Entity(GameMaster gameMaster)
 {
     public GameMaster GameMaster { get; set; } = gameMaster;
     public Identity Id { get; set; } = GameMaster.GetNextId();
-    public BusinessTypeEnum BusinessTypeEnum { get; set; } = BusinessTypeEnum.Card;
+    public AnitaType AnitaType { get; set; } = AnitaType.Card;
     public CardType CardType { get; set; } = CardType.None;
     public Zone Zone { get; set; }
     public EntityName Name { get; set; } = new("?");

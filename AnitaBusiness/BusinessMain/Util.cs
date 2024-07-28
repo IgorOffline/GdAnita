@@ -12,7 +12,7 @@ public static class Util
         var emptyCreature = new Entity(gameMaster);
         emptyCreature.Name = new EntityName("Empty");
         emptyCreature.Zone = Zone.Creature;
-        emptyCreature.BusinessTypeEnum = BusinessTypeEnum.None;
+        emptyCreature.AnitaType = AnitaType.None;
         
         return emptyCreature;
     }
@@ -20,7 +20,7 @@ public static class Util
     public static void RevertCreatureToEmptySlot(Entity creature)
     {
         creature.Name = new EntityName("Empty");
-        creature.BusinessTypeEnum = BusinessTypeEnum.None;
+        creature.AnitaType = AnitaType.None;
     }
 
     public static Identity Team2CreatureIdentityFormula(int index)
