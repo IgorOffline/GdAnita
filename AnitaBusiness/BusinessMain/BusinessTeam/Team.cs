@@ -211,6 +211,9 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         
         if (Action != null && TeamState == TeamState.SpawningCreature)
         {
+            var newCreature = Util.CloneCreature(Action);
+            CreatureZone[4] = newCreature;
+            
             TargetingFromHandTransitionCommon();
             
             successfulTransition = true;

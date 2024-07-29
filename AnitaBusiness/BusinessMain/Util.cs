@@ -29,6 +29,19 @@ public static class Util
         
         return new Identity(index + 1 + team2Offset);
     }
+
+    public static Entity CloneCreature(Entity original)
+    {
+        var newCreature = new Entity(original.GameMaster);
+        newCreature.Name = original.Name;
+        newCreature.CardType = original.CardType;
+        newCreature.Zone = Zone.Creature;
+        newCreature.Damage = original.Damage;
+        newCreature.Hp = original.Hp;
+        newCreature.ManaCostA = original.ManaCostA;
+
+        return newCreature;
+    }
     
     public static string TeamStateToString(TeamState teamState) => teamState switch
     {
