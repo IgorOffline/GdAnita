@@ -95,4 +95,9 @@ public class GameMaster
     {
         return Team1.CreatureAction(actionableEntity);
     }
+    
+    public bool SpawnCreature()
+    {
+        return Team1.SpawnCreature();
+    }
 }

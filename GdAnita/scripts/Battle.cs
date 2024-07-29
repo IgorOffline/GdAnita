@@ -34,6 +34,7 @@ public partial class Battle : Node3D
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetCreature;
+    private AudioStreamPlayer3D? _audioStreamPlayerSpawnCreature;
     private AudioStreamPlayer3D? _audioStreamPlayerDrawCard;
 
     private PackedScene? _creature1A;
@@ -82,6 +83,7 @@ public partial class Battle : Node3D
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
         _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
         _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetCreature");
+        _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerSpawnCreature");
         _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
@@ -238,16 +240,30 @@ public partial class Battle : Node3D
 
             _raycastTimer = 0;
         }
-
-        if (_hoveredCreature != null && Input.IsActionJustPressed("MousePrimary"))
+        
+        if (Input.IsActionJustPressed("MousePrimary"))
         {
-            if (GameMaster.CreatureAction(_hoveredCreature))
+            if (_hoveredCreature == null && _lastGroundCollider != null)
             {
-                DestroyCreatures();
+                if (GameMaster.SpawnCreature())
+                {
+                    DestroyCreatures();
 
-                SpawnCreatures();
+                    SpawnCreatures();
 
-                _audioStreamPlayerTargetCreature!.Play();
+                    _audioStreamPlayerTargetCreature!.Play();
+                }
+            }
+            else if (_hoveredCreature != null)
+            {
+                if (GameMaster.CreatureAction(_hoveredCreature))
+                {
+                    DestroyCreatures();
+
+                    SpawnCreatures();
+
+                    _audioStreamPlayerTargetCreature!.Play();
+                }
             }
         }
 

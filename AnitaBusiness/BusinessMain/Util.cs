@@ -36,6 +36,7 @@ public static class Util
         TeamState.CastingPayCosts => "CastingPayCosts",
         TeamState.CastingCostsPaid => "CastingCostsPaid",
         TeamState.Targeting => "Targeting",
+        TeamState.SpawningCreature => "SpawningCreature",
         _ => "?"
     };
 

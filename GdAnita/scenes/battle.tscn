@@ -93,5 +93,8 @@ stream = ExtResource("7_n3d84")
 [node name="AudioStreamPlayerTargetCreature" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("7_4l2kr")
 
+[node name="AudioStreamPlayerSpawnCreature" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("7_4l2kr")
+
 [node name="AudioStreamPlayerDrawCard" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("8_xapte")
