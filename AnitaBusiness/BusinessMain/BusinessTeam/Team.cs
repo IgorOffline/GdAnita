@@ -135,20 +135,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
             
                 if (actionableEntity.Hp.Val < 1)
                 {
-                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
-                    {
-                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(actionableEntity);
-                        }
-                    }
-                    foreach (var friendlyCreatureInZone in CreatureZone)
-                    {
-                        if (friendlyCreatureInZone.Id.Equals(actionableEntity.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(actionableEntity);
-                        }
-                    }
+                    CreatureCleanup(actionableEntity);
                 }
             
                 TargetingFromHandTransitionCommon();
@@ -162,23 +149,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
                 if (actionableEntity.Hp.Val < 1)
                 {
-                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
-                    {
-                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(actionableEntity);
-                        }
-                    }
+                    CreatureCleanup(actionableEntity);
                 }
                 if (Action.Hp.Val < 1)
                 {
-                    foreach (var creatureInZone in CreatureZone)
-                    {
-                        if (creatureInZone.Id.Equals(Action.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(Action);
-                        }
-                    }
+                    CreatureCleanup(Action);
                 }
             
                 ClearActionAndTeamState();
@@ -203,5 +178,23 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         Action = null;
         TeamState = TeamState.None;
+    }
+
+    public void CreatureCleanup(Entity creature)
+    {
+        foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
+        {
+            if (enemyCreatureInZone.Id.Equals(creature.Id))
+            {
+                Util.RevertCreatureToEmptySlot(creature);
+            }
+        }
+        foreach (var friendlyCreatureInZone in CreatureZone)
+        {
+            if (friendlyCreatureInZone.Id.Equals(creature.Id))
+            {
+                Util.RevertCreatureToEmptySlot(creature);
+            }
+        }
     }
 }
