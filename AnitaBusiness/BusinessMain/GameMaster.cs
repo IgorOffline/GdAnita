@@ -21,6 +21,7 @@ public class GameMaster
 
     public Team Team1 { get; set; }
     public Team Team2 { get; set; }
+    public Team[] Teams => [Team1, Team2];
 
     public GameMaster(ILogger logger)
     {
@@ -35,17 +36,33 @@ public class GameMaster
             var emptyCreature2 = Util.CreateEmptyCreatureSlot(this);
             Team2.CreatureZone[i] = emptyCreature2;
         }
-        for (var i = 0; i < 15; i++)
+        for (var i = 1; i < 15; i++)
         {
-            var burn = new Entity(this);
-            burn.Name = new EntityName("Burn");
-            burn.CardType = CardType.Sorcery;
-            burn.Zone = Zone.Deck;
-            burn.Damage = new Damage(i + 2);
-            burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
-            Team1.Deck.Add(burn);
+            if (i % 2 == 1)
+            {
+                var burn = new Entity(this);
+                burn.Name = new EntityName("Burn");
+                burn.CardType = CardType.Sorcery;
+                burn.Zone = Zone.Deck;
+                burn.Damage = new Damage(i + 2);
+                burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
+                Team1.Deck.Add(burn);
+            }
+            else
+            {
+                var bee = new Entity(this);
+                bee.Name = new EntityName("Bee");
+                bee.CardType = CardType.Creature;
+                bee.Zone = Zone.Deck;
+                bee.Damage = new Damage(i + 2);
+                bee.Hp = new Hp(i + 2);
+                bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
+                Team1.Deck.Add(bee);
+            }
         }
         {
+            var team = Team1;
+            
             var bee = new Entity(this);
             bee.Name = new EntityName("Strong Bee");
             bee.CardType = CardType.Creature;
@@ -54,11 +71,13 @@ public class GameMaster
             bee.Damage = new Damage(9);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
 
-            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(0, true);
-            Team1.CreatureZone[0] = bee;
+            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(0, team.TeamId);
+            team.CreatureZone[0] = bee;
         }
         for (var i = 0; i < 3; i++)
         {
+            var team = Team2;
+            
             var bee = new Entity(this);
             bee.Name = new EntityName("Bee");
             bee.CardType = CardType.Creature;
@@ -67,8 +86,8 @@ public class GameMaster
             bee.Damage = new Damage(i + 1);
             bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(0));
 
-            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(i, false);
-            Team2.CreatureZone[i] = bee;
+            bee.PlacedIndex = Util.TeamCreatureIdentityFormula(i, team.TeamId);
+            team.CreatureZone[i] = bee;
         }
     }
 
@@ -80,5 +99,10 @@ public class GameMaster
     public bool CreatureAction(Entity actionableEntity)
     {
         return Team1.CreatureAction(actionableEntity);
+    }
+    
+    public bool SpawnCreature(int index, TeamId teamId)
+    {
+        return TeamIdUtil.IsTeam1(teamId) ? Team1.SpawnCreature(index) : Team2.SpawnCreature(index);
     }
 }

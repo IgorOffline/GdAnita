@@ -73,7 +73,14 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         if (Action != null && TeamState == TeamState.CastingCostsPaid)
         {
-            TeamState = TeamState.Targeting;
+            if (Action.CardType == CardType.Sorcery)
+            {
+                TeamState = TeamState.Targeting;
+            }
+            else if (Action.CardType == CardType.Creature)
+            {
+                TeamState = TeamState.SpawningCreature;
+            }
         }
     }
 
@@ -196,5 +203,24 @@ public class Team(GameMaster gameMaster, TeamId teamId)
                 Util.RevertCreatureToEmptySlot(creature);
             }
         }
+    }
+
+    public bool SpawnCreature(int index)
+    {
+        var successfulTransition = false;
+        
+        if (Action != null && TeamState == TeamState.SpawningCreature)
+        {
+            var newCreature = Util.CloneCreature(Action);
+            newCreature.Zone = Zone.Creature;
+            newCreature.PlacedIndex = Util.TeamCreatureIdentityFormula(index, TeamId);
+            CreatureZone[index] = newCreature;
+            
+            TargetingFromHandTransitionCommon();
+            
+            successfulTransition = true;
+        }
+
+        return successfulTransition;
     }
 }

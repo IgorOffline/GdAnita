@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AnitaBusiness.BusinessMain;
 using AnitaBusiness.BusinessMain.BusinessMana;
+using AnitaBusiness.BusinessMain.BusinessTeam;
 using AnitaBusiness.BusinessMain.BusinessType;
 using AnitaBusiness.BusinessMain.BusinessType.Enums;
 using Godot;
@@ -28,11 +29,13 @@ public partial class Battle : Node3D
     private TextureButton? _btnCard10;
     private TextureButton[] _buttons = new TextureButton[10];
     private CompressedTexture2D? _btnCardTextureNormalEmpty;
-    private CompressedTexture2D? _btnCardTextureNormalHeld;
+    private CompressedTexture2D? _btnCardTextureNormalSorceryHeld;
+    private CompressedTexture2D? _btnCardTextureNormalCreatureHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetCreature;
+    private AudioStreamPlayer3D? _audioStreamPlayerSpawnCreature;
     private AudioStreamPlayer3D? _audioStreamPlayerDrawCard;
 
     private PackedScene? _creature1A;
@@ -81,10 +84,12 @@ public partial class Battle : Node3D
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
         _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
         _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetCreature");
+        _audioStreamPlayerSpawnCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerSpawnCreature");
         _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
-        _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
+        _btnCardTextureNormalSorceryHeld = GD.Load<CompressedTexture2D>("res://textures/anita1s.png");
+        _btnCardTextureNormalCreatureHeld = GD.Load<CompressedTexture2D>("res://textures/anita1c.png");
 
         _creature1A = ResourceLoader.Load<PackedScene>("scenes/alice_1a.tscn");
         var instanceForCreatureMask = _creature1A.Instantiate<Node3D>();
@@ -168,32 +173,22 @@ public partial class Battle : Node3D
 
     public void SpawnCreatures()
     {
-        for (var i = 0; i < GameMaster.Team1.CreatureZone.Length; i++)
+        foreach (var team in GameMaster.Teams)
         {
-            var creature = GameMaster.Team1.CreatureZone[i];
-
-            if (creature.AnitaType == AnitaType.Card)
+            for (var i = 0; i < team.CreatureZone.Length; i++)
             {
-                var newCreature = _creature1A!.Instantiate<Node3D>();
-                newCreature.Name = "Team1Creature" + i;
-                AddChild(newCreature, true);
-                newCreature.Position = BattleUtil.CreatureIndexToPosition(i, true);
+                var creature = team.CreatureZone[i];
 
-                _creatures.Add(newCreature);
-            }
-        }
-        for (var i = 0; i < GameMaster.Team2.CreatureZone.Length; i++)
-        {
-            var creature = GameMaster.Team2.CreatureZone[i];
+                if (creature.AnitaType == AnitaType.Card)
+                {
+                    var newCreature = _creature1A!.Instantiate<Node3D>();
+                    var namePrefix = TeamIdUtil.IsTeam1(team.TeamId) ? "Team1Creature" : "Team2Creature";
+                    newCreature.Name = namePrefix + i;
+                    AddChild(newCreature, true);
+                    newCreature.Position = BattleUtil.CreatureIndexToPosition(i, team.TeamId);
 
-            if (creature.AnitaType == AnitaType.Card)
-            {
-                var newCreature = _creature1A!.Instantiate<Node3D>();
-                newCreature.Name = "Team2Creature" + i;
-                AddChild(newCreature, true);
-                newCreature.Position = BattleUtil.CreatureIndexToPosition(i, false);
-
-                _creatures.Add(newCreature);
+                    _creatures.Add(newCreature);
+                }
             }
         }
     }
@@ -211,22 +206,16 @@ public partial class Battle : Node3D
             {
                 var lastCreatureColliderPlacedPosition = _lastCreatureCollider.Position;
 
-                foreach (var team1Creature in GameMaster.Team1.CreatureZone)
+                foreach (var team in GameMaster.Teams)
                 {
-                    var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition, true);
-
-                    if (!placedIndex.Equals(new Identity(0)) && placedIndex.Equals(team1Creature.PlacedIndex))
+                    foreach (var teamCreature in team.CreatureZone)
                     {
-                        _hoveredCreature = team1Creature;
-                    }
-                }
-                foreach (var team2Creature in GameMaster.Team2.CreatureZone)
-                {
-                    var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition, false);
+                        var placedIndex = BattleUtil.PositionToIndex(GameMaster, lastCreatureColliderPlacedPosition, team.TeamId);
 
-                    if (!placedIndex.Equals(new Identity(0)) && placedIndex.Equals(team2Creature.PlacedIndex))
-                    {
-                        _hoveredCreature = team2Creature;
+                        if (!placedIndex.Equals(new Identity(0)) && placedIndex.Equals(teamCreature.PlacedIndex))
+                        {
+                            _hoveredCreature = teamCreature;
+                        }
                     }
                 }
             }
@@ -236,16 +225,43 @@ public partial class Battle : Node3D
 
             _raycastTimer = 0;
         }
-
-        if (_hoveredCreature != null && Input.IsActionJustPressed("MousePrimary"))
+        
+        if (Input.IsActionJustPressed("MousePrimary"))
         {
-            if (GameMaster.CreatureAction(_hoveredCreature))
+            if (_hoveredCreature == null && _lastGroundCollider != null)
             {
-                DestroyCreatures();
+                var colliderPosition = _lastGroundCollider.Position;
+                
+                foreach (var team in GameMaster.Teams)
+                {
+                    for (var i = 0; i < team.CreatureZone.Length; i++)
+                    {
+                        var creatureIndexToPosition = BattleUtil.CreatureIndexToPosition(i, team.TeamId);
 
-                SpawnCreatures();
+                        if (colliderPosition.Equals(creatureIndexToPosition))
+                        {
+                            if (GameMaster.SpawnCreature(i, team.TeamId))
+                            {
+                                DestroyCreatures();
 
-                _audioStreamPlayerTargetCreature!.Play();
+                                SpawnCreatures();
+
+                                _audioStreamPlayerSpawnCreature!.Play();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (_hoveredCreature != null)
+            {
+                if (GameMaster.CreatureAction(_hoveredCreature))
+                {
+                    DestroyCreatures();
+
+                    SpawnCreatures();
+
+                    _audioStreamPlayerTargetCreature!.Play();
+                }
             }
         }
 
@@ -272,7 +288,14 @@ public partial class Battle : Node3D
 
                 if (GameMaster.Team1.Hand.Count > i)
                 {
-                    button.TextureNormal = _btnCardTextureNormalHeld;
+                    if (GameMaster.Team1.Hand[i].CardType == CardType.Sorcery)
+                    {
+                        button.TextureNormal = _btnCardTextureNormalSorceryHeld;
+                    }
+                    else if (GameMaster.Team1.Hand[i].CardType == CardType.Creature)
+                    {
+                        button.TextureNormal = _btnCardTextureNormalCreatureHeld;
+                    }
                 }
                 else
                 {
@@ -360,22 +383,22 @@ public partial class Battle : Node3D
 
     private static class BattleUtil
     {
-        public static Vector3 CreatureIndexToPosition(int i, bool team1)
+        public static Vector3 CreatureIndexToPosition(int i, TeamId teamId)
         {
-            var zOffset = team1 ? 2 : 0;
+            var zOffset = TeamIdUtil.IsTeam1(teamId) ? 2 : 0;
             
             return new Vector3(3 + i * 2, 0, 5 + zOffset);
         }
 
-        public static Identity PositionToIndex(GameMaster gameMaster, Vector3 position, bool team1)
+        public static Identity PositionToIndex(GameMaster gameMaster, Vector3 position, TeamId teamId)
         {
-            var team = team1 ? gameMaster.Team1 : gameMaster.Team2;
+            var team = TeamIdUtil.IsTeam1(teamId) ? gameMaster.Team1 : gameMaster.Team2;
             
             for (var i = 0; i < team.CreatureZone.Length; i++)
             {
-                if (position.Equals(CreatureIndexToPosition(i, team1)))
+                if (position.Equals(CreatureIndexToPosition(i, teamId)))
                 {
-                    return Util.TeamCreatureIdentityFormula(i, team1);
+                    return Util.TeamCreatureIdentityFormula(i, teamId);
                 }
             }
 

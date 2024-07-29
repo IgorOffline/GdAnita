@@ -6,4 +6,5 @@ public enum TeamState : ushort
     CastingPayCosts = 1,
     CastingCostsPaid = 2,
     Targeting = 3,
+    SpawningCreature = 4,
 }
