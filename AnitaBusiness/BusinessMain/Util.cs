@@ -23,9 +23,11 @@ public static class Util
         creature.AnitaType = AnitaType.None;
     }
 
-    public static Identity Team2CreatureIdentityFormula(int index)
+    public static Identity TeamCreatureIdentityFormula(int index, bool team1)
     {
-        return new Identity(index + 1 + 8);
+        var team2Offset = team1 ? 0 : 8;
+        
+        return new Identity(index + 1 + team2Offset);
     }
     
     public static string TeamStateToString(TeamState teamState) => teamState switch

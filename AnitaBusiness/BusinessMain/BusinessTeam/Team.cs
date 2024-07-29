@@ -101,8 +101,15 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         if (Action != null && TeamState == TeamState.Targeting)
         {
             GameMaster.DamageTeam(EnemyTeam, Action);
-
-            TargetingTransitionCommon();
+            
+            if (Action.CardType == CardType.Sorcery)
+            {
+                TargetingFromHandTransitionCommon();
+            }
+            else if (Action.CardType == CardType.Creature)
+            {
+                ClearActionAndTeamState();
+            }
 
             successfulTransition = true;
         }
@@ -110,40 +117,84 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         return successfulTransition;
     }
     
-    public bool TargetEnemyCreature(Entity enemyCreature)
+    public bool CreatureAction(Entity actionableEntity)
     {
         var successfulTransition = false;
-        
-        if (Action != null && TeamState == TeamState.Targeting)
+
+        if (Action == null && TeamState == TeamState.None)
         {
-            enemyCreature.Hp = new Hp(enemyCreature.Hp.Val - Action.Damage.Val);
+            Action = actionableEntity;
 
-            TargetingTransitionCommon();
-
-            if (enemyCreature.Hp.Val < 1)
+            TeamState = TeamState.Targeting;
+        }
+        else if (Action != null && TeamState == TeamState.Targeting)
+        {
+            if (actionableEntity.CardType == CardType.Sorcery)
             {
-                foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
+                actionableEntity.Hp = new Hp(actionableEntity.Hp.Val - Action.Damage.Val);
+            
+                if (actionableEntity.Hp.Val < 1)
                 {
-                    if (enemyCreatureInZone.Id.Equals(enemyCreature.Id))
+                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
                     {
-                        Util.RevertCreatureToEmptySlot(enemyCreature);
+                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
+                        {
+                            Util.RevertCreatureToEmptySlot(actionableEntity);
+                        }
                     }
                 }
-            }
             
-            successfulTransition = true;
+                TargetingFromHandTransitionCommon();
+                
+                successfulTransition = true;
+            }
+            else if (actionableEntity.CardType == CardType.Creature)
+            {
+                actionableEntity.Hp = new Hp(actionableEntity.Hp.Val - Action.Damage.Val);
+                Action.Hp = new Hp(Action.Hp.Val - actionableEntity.Damage.Val);
+
+                if (actionableEntity.Hp.Val < 1)
+                {
+                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
+                    {
+                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
+                        {
+                            Util.RevertCreatureToEmptySlot(actionableEntity);
+                        }
+                    }
+                }
+                if (Action.Hp.Val < 1)
+                {
+                    foreach (var creatureInZone in CreatureZone)
+                    {
+                        if (creatureInZone.Id.Equals(Action.Id))
+                        {
+                            Util.RevertCreatureToEmptySlot(Action);
+                        }
+                    }
+                }
+            
+                ClearActionAndTeamState();
+                
+                successfulTransition = true;
+            }
         }
         
         return successfulTransition;
     }
 
-    public void TargetingTransitionCommon()
+    public void TargetingFromHandTransitionCommon()
     {
         var card = Hand.First(card => card.Id == Action!.Id);
         card.Zone = Zone.Graveyard;
         Hand.Remove(card);
+
+        ClearActionAndTeamState();
+    }
+
+    public void ClearActionAndTeamState()
+    {
         Action = null;
-            
         TeamState = TeamState.None;
     }
 }
