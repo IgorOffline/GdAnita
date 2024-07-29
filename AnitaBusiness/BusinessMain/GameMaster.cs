@@ -21,6 +21,7 @@ public class GameMaster
 
     public Team Team1 { get; set; }
     public Team Team2 { get; set; }
+    public Team[] Teams => [Team1, Team2];
 
     public GameMaster(ILogger logger)
     {
@@ -96,8 +97,8 @@ public class GameMaster
         return Team1.CreatureAction(actionableEntity);
     }
     
-    public bool SpawnCreature()
+    public bool SpawnCreature(int index, bool team1)
     {
-        return Team1.SpawnCreature();
+        return team1 ? Team1.SpawnCreature(index) : Team2.SpawnCreature(index);
     }
 }

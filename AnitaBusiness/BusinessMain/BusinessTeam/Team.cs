@@ -205,14 +205,14 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         }
     }
 
-    public bool SpawnCreature()
+    public bool SpawnCreature(int index)
     {
         var successfulTransition = false;
         
         if (Action != null && TeamState == TeamState.SpawningCreature)
         {
             var newCreature = Util.CloneCreature(Action);
-            CreatureZone[4] = newCreature;
+            CreatureZone[index] = newCreature;
             
             TargetingFromHandTransitionCommon();
             

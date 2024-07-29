@@ -83,7 +83,7 @@ public partial class Battle : Node3D
         _audioStreamPlayerPayCost = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerPayCost");
         _audioStreamPlayerTargetFace = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetFace");
         _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerTargetCreature");
-        _audioStreamPlayerTargetCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerSpawnCreature");
+        _audioStreamPlayerSpawnCreature = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerSpawnCreature");
         _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
@@ -245,13 +245,30 @@ public partial class Battle : Node3D
         {
             if (_hoveredCreature == null && _lastGroundCollider != null)
             {
-                if (GameMaster.SpawnCreature())
+                var colliderPosition = _lastGroundCollider.Position;
+
+                var team1 = true;
+                
+                foreach (var team in GameMaster.Teams)
                 {
-                    DestroyCreatures();
+                    for (var i = 0; i < team.CreatureZone.Length; i++)
+                    {
+                        var creatureIndexToPosition = BattleUtil.CreatureIndexToPosition(i, team1);
 
-                    SpawnCreatures();
+                        if (colliderPosition.Equals(creatureIndexToPosition))
+                        {
+                            if (GameMaster.SpawnCreature(i, team1))
+                            {
+                                DestroyCreatures();
 
-                    _audioStreamPlayerTargetCreature!.Play();
+                                SpawnCreatures();
+
+                                _audioStreamPlayerSpawnCreature!.Play();
+                            }
+                        }
+                    }
+
+                    team1 = false;
                 }
             }
             else if (_hoveredCreature != null)
