@@ -81,7 +81,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         var successfulDraw = false;
         
-        if (Deck.Count > 0 && Hand.Count < 5)
+        if (Deck.Count > 0 && Hand.Count < 11)
         {
             var entity = Deck.First();
             Deck.RemoveAt(0);

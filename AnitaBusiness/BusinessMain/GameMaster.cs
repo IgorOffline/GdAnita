@@ -35,7 +35,7 @@ public class GameMaster
             var emptyCreature2 = Util.CreateEmptyCreatureSlot(this);
             Team2.CreatureZone[i] = emptyCreature2;
         }
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 15; i++)
         {
             var burn = new Entity(this);
             burn.Name = new EntityName("Burn");
