@@ -23,9 +23,9 @@ public static class Util
         creature.AnitaType = AnitaType.None;
     }
 
-    public static Identity TeamCreatureIdentityFormula(int index, bool team1)
+    public static Identity TeamCreatureIdentityFormula(int index, TeamId teamId)
     {
-        var team2Offset = team1 ? 0 : 8;
+        var team2Offset = TeamIdUtil.IsTeam1(teamId) ? 0 : 8;
         
         return new Identity(index + 1 + team2Offset);
     }
@@ -35,7 +35,7 @@ public static class Util
         var newCreature = new Entity(original.GameMaster);
         newCreature.Name = original.Name;
         newCreature.CardType = original.CardType;
-        newCreature.Zone = Zone.Creature;
+        newCreature.Zone = original.Zone;
         newCreature.Damage = original.Damage;
         newCreature.Hp = original.Hp;
         newCreature.ManaCostA = original.ManaCostA;

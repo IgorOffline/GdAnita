@@ -212,6 +212,8 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         if (Action != null && TeamState == TeamState.SpawningCreature)
         {
             var newCreature = Util.CloneCreature(Action);
+            newCreature.Zone = Zone.Creature;
+            newCreature.PlacedIndex = Util.TeamCreatureIdentityFormula(index, TeamId);
             CreatureZone[index] = newCreature;
             
             TargetingFromHandTransitionCommon();
