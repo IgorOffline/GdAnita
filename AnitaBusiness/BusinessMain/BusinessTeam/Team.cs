@@ -81,7 +81,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         var successfulDraw = false;
         
-        if (Deck.Count > 0 && Hand.Count < 5)
+        if (Deck.Count > 0 && Hand.Count < 11)
         {
             var entity = Deck.First();
             Deck.RemoveAt(0);
@@ -129,19 +129,13 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         }
         else if (Action != null && TeamState == TeamState.Targeting)
         {
-            if (actionableEntity.CardType == CardType.Sorcery)
+            if (Action.CardType == CardType.Sorcery)
             {
                 actionableEntity.Hp = new Hp(actionableEntity.Hp.Val - Action.Damage.Val);
             
                 if (actionableEntity.Hp.Val < 1)
                 {
-                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
-                    {
-                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(actionableEntity);
-                        }
-                    }
+                    CreatureCleanup(actionableEntity);
                 }
             
                 TargetingFromHandTransitionCommon();
@@ -155,23 +149,11 @@ public class Team(GameMaster gameMaster, TeamId teamId)
 
                 if (actionableEntity.Hp.Val < 1)
                 {
-                    foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
-                    {
-                        if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(actionableEntity);
-                        }
-                    }
+                    CreatureCleanup(actionableEntity);
                 }
                 if (Action.Hp.Val < 1)
                 {
-                    foreach (var creatureInZone in CreatureZone)
-                    {
-                        if (creatureInZone.Id.Equals(Action.Id))
-                        {
-                            Util.RevertCreatureToEmptySlot(Action);
-                        }
-                    }
+                    CreatureCleanup(Action);
                 }
             
                 ClearActionAndTeamState();
@@ -196,5 +178,23 @@ public class Team(GameMaster gameMaster, TeamId teamId)
     {
         Action = null;
         TeamState = TeamState.None;
+    }
+
+    public void CreatureCleanup(Entity creature)
+    {
+        foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
+        {
+            if (enemyCreatureInZone.Id.Equals(creature.Id))
+            {
+                Util.RevertCreatureToEmptySlot(creature);
+            }
+        }
+        foreach (var friendlyCreatureInZone in CreatureZone)
+        {
+            if (friendlyCreatureInZone.Id.Equals(creature.Id))
+            {
+                Util.RevertCreatureToEmptySlot(creature);
+            }
+        }
     }
 }
