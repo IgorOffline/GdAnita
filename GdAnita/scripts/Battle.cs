@@ -28,7 +28,8 @@ public partial class Battle : Node3D
     private TextureButton? _btnCard10;
     private TextureButton[] _buttons = new TextureButton[10];
     private CompressedTexture2D? _btnCardTextureNormalEmpty;
-    private CompressedTexture2D? _btnCardTextureNormalHeld;
+    private CompressedTexture2D? _btnCardTextureNormalSorceryHeld;
+    private CompressedTexture2D? _btnCardTextureNormalCreatureHeld;
     private AudioStreamPlayer3D? _audioStreamPlayerCasting;
     private AudioStreamPlayer3D? _audioStreamPlayerPayCost;
     private AudioStreamPlayer3D? _audioStreamPlayerTargetFace;
@@ -84,7 +85,8 @@ public partial class Battle : Node3D
         _audioStreamPlayerDrawCard = GetNode<AudioStreamPlayer3D>("AudioStreamPlayerDrawCard");
 
         _btnCardTextureNormalEmpty = GD.Load<CompressedTexture2D>("res://textures/anitabrown.png");
-        _btnCardTextureNormalHeld = GD.Load<CompressedTexture2D>("res://textures/anitagreen1.png");
+        _btnCardTextureNormalSorceryHeld = GD.Load<CompressedTexture2D>("res://textures/anita1s.png");
+        _btnCardTextureNormalCreatureHeld = GD.Load<CompressedTexture2D>("res://textures/anita1c.png");
 
         _creature1A = ResourceLoader.Load<PackedScene>("scenes/alice_1a.tscn");
         var instanceForCreatureMask = _creature1A.Instantiate<Node3D>();
@@ -272,7 +274,14 @@ public partial class Battle : Node3D
 
                 if (GameMaster.Team1.Hand.Count > i)
                 {
-                    button.TextureNormal = _btnCardTextureNormalHeld;
+                    if (GameMaster.Team1.Hand[i].CardType == CardType.Sorcery)
+                    {
+                        button.TextureNormal = _btnCardTextureNormalSorceryHeld;
+                    }
+                    else if (GameMaster.Team1.Hand[i].CardType == CardType.Creature)
+                    {
+                        button.TextureNormal = _btnCardTextureNormalCreatureHeld;
+                    }
                 }
                 else
                 {

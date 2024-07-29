@@ -35,15 +35,29 @@ public class GameMaster
             var emptyCreature2 = Util.CreateEmptyCreatureSlot(this);
             Team2.CreatureZone[i] = emptyCreature2;
         }
-        for (var i = 0; i < 15; i++)
+        for (var i = 1; i < 15; i++)
         {
-            var burn = new Entity(this);
-            burn.Name = new EntityName("Burn");
-            burn.CardType = CardType.Sorcery;
-            burn.Zone = Zone.Deck;
-            burn.Damage = new Damage(i + 2);
-            burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
-            Team1.Deck.Add(burn);
+            if (i % 2 == 1)
+            {
+                var burn = new Entity(this);
+                burn.Name = new EntityName("Burn");
+                burn.CardType = CardType.Sorcery;
+                burn.Zone = Zone.Deck;
+                burn.Damage = new Damage(i + 2);
+                burn.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
+                Team1.Deck.Add(burn);
+            }
+            else
+            {
+                var bee = new Entity(this);
+                bee.Name = new EntityName("Bee");
+                bee.CardType = CardType.Creature;
+                bee.Zone = Zone.Deck;
+                bee.Damage = new Damage(i + 2);
+                bee.Hp = new Hp(i + 2);
+                bee.ManaCostA = new ManaCost(ManaType.A, new ManaVal(i + 1));
+                Team1.Deck.Add(bee);
+            }
         }
         {
             var bee = new Entity(this);
