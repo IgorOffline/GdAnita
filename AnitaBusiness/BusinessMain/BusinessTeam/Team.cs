@@ -129,7 +129,7 @@ public class Team(GameMaster gameMaster, TeamId teamId)
         }
         else if (Action != null && TeamState == TeamState.Targeting)
         {
-            if (actionableEntity.CardType == CardType.Sorcery)
+            if (Action.CardType == CardType.Sorcery)
             {
                 actionableEntity.Hp = new Hp(actionableEntity.Hp.Val - Action.Damage.Val);
             
@@ -138,6 +138,13 @@ public class Team(GameMaster gameMaster, TeamId teamId)
                     foreach (var enemyCreatureInZone in EnemyTeam.CreatureZone)
                     {
                         if (enemyCreatureInZone.Id.Equals(actionableEntity.Id))
+                        {
+                            Util.RevertCreatureToEmptySlot(actionableEntity);
+                        }
+                    }
+                    foreach (var friendlyCreatureInZone in CreatureZone)
+                    {
+                        if (friendlyCreatureInZone.Id.Equals(actionableEntity.Id))
                         {
                             Util.RevertCreatureToEmptySlot(actionableEntity);
                         }
