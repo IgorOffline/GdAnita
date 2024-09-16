@@ -1,1 +1,1 @@
-# New Godot Project
+# Unfinished Godot Mono (C#) Card Game
